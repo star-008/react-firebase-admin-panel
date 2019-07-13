@@ -23,12 +23,16 @@ class ImageUpload extends React.Component {
     e.preventDefault();
     let reader = new FileReader();
     let file = e.target.files[0];
+    if (file === undefined)
+      return;
+
     reader.onloadend = () => {
       this.setState({
         file: file,
         imagePreviewUrl: reader.result
       });
     };
+
     reader.readAsDataURL(file);
   }
   handleSubmit(e) {

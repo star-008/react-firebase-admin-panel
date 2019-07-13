@@ -63,7 +63,6 @@ class Packages extends React.Component {
     var _this = this;
     _this.setState({loading: true});
     Firebase.firestore().collection('Packages').doc(object.code).delete().then(function (res) {
-        _this.setState({loading: false});
         var storageRef = Firebase.storage().ref();
         var image_name = "package_image_" + object.code;
         if (object.image_url !== "") {

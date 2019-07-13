@@ -250,15 +250,15 @@
 .full-height-page {
   height: 825px;
 }
-
 .top-margin-section {
   margin-top: 75px;
 }
-
+.top-margin-package-card-1 {
+  margin-top: 91px;
+}
 .account-tab {
   margin: 10px;
 }
-
 .custom-nav {
   margin-right: 5px;
 }
@@ -275,4 +275,113 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.left-margin-50 {
+  margin-left: 50px;
+}
+.left-margin-20 {
+  margin-left: 20px;
+}
+.left-margin-12 {
+  margin-left: 12px;
+}
+.left-margin-10 {
+  margin-left: 10px;
+}
+.top-margin-per-40 {
+  margin-top: 45%;
+}
+.top-margin-per-20 {
+  margin-top: 20%;
+}
+.top-margin-12 {
+  margin-top: 15px;
+}
+.top-margin-10 {
+  margin-top: 10px;
+}
+.top-margin-7 {
+  margin-top: 7px;
+}
+.top-margin-2 {
+  margin-top: 2px;
+}
+.padding-bottom-5 {
+  padding-bottom: 50px;
+}
+.inline-group {
+  display: inline-block;
+}
+.inline-span {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+.width-100 {
+  width: 100%;
+}
+.width-50 {
+  width: 50%;
+}
+.width-30 {
+  width: 30%;
+}
+.size-60-fixed {
+  width: 60px;
+  height: 60px;
+}
+.full-size {
+  width: 100%;
+  height: 100%;
+}
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}
+.horizon-center {
+  text-align: center;
+}
+.vertical-middle {
+  vertical-align: middle;
+}
+.border-gray {
+  border: 1px solid #e2e2e2;
+}
+.border-top-gray {
+  border-top: 1px solid #e2e2e2;
+}
+.border-bottom-gray {
+  border-bottom: 1px solid #e2e2e2;
+}
+.opacity-0 {
+  opacity: 0;
+}
+.overflow-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.height-card {
+  height: 98%;
+}
+.background-gray{
+  background-color: lightgray;
+}
+.padding-custom-location {
+  padding: 0 50px;
+}
+.padding-custom {
+  padding: 0 5px;
+}
+.top-margin-custom {
+  margin-top: 1.4%;
+}
+.custom-map-content {
+  width: 100%;
+  height: 350px;
+}
+.margin-0 {
+  margin: 0;
 }

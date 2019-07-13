@@ -665,7 +665,7 @@ class Register extends React.Component {
                                                   </div>
                                                   <div className="col-md-5">
                                                       <Button
-                                                          // disabled={!this.state.enableRegister}
+                                                          disabled={!this.state.enableRegister}
                                                           ref="btn_register"
                                                           color="success"
                                                           onClick={this.handleRegister}

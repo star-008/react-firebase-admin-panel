@@ -8,7 +8,17 @@ import Gallery from "./views/pages/admin/Gallery.jsx";
 import Welcome from "./views/pages/admin/Welcome.jsx";
 import Dashboard from "./views/pages/admin/Dashboard.jsx";
 import Locations from "./views/pages/admin/Locations.jsx";
+import MainLocationAdd from "./views/pages/admin/MainLocationAdd.jsx";
+import MainLocationEdit from "./views/pages/admin/MainLocationEdit.jsx";
+import SubLocationAdd from "./views/pages/admin/SubLocationAdd.jsx";
+import SubLocationAddRequestQuotation from "./views/pages/admin/SubLocationAddRequestQuotation.jsx";
+import SubLocationAddSelectPackage from "./views/pages/admin/SubLocationAddSelectPackage.jsx";
+import SubLocationEdit from "./views/pages/admin/SubLocationEdit.jsx";
+import SubLocationEditRequestQuotation from "./views/pages/admin/SubLocationEditRequestQuotation.jsx";
+import SubLocationEditUpgradePackage from "./views/pages/admin/SubLocationEditUpgradePackage.jsx";
 import Services from "./views/pages/admin/Services.jsx";
+import ServiceAdd from "./views/pages/admin/ServiceAdd.jsx";
+import ServiceEdit from "./views/pages/admin/ServiceEdit.jsx";
 import Counters from "./views/pages/admin/Counters.jsx";
 import CounterDisplays from "./views/pages/admin/CounterDisplays.jsx";
 import MainDisplay from "./views/pages/admin/MainDisplay.jsx";
@@ -132,6 +142,62 @@ const routes = [
         dispenser_hide: true
     },
     {
+        path: "/main_location/add",
+        name: "mainLocationAdd",
+        component: MainLocationAdd,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/main_location/edit/:id",
+        name: "mainLocationEdit",
+        component: MainLocationEdit,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/sub_location/add/:package_id",
+        name: "subLocationAdd",
+        component: SubLocationAdd,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/sub_location/add_select_package",
+        name: "subLocationAdd",
+        component: SubLocationAddSelectPackage,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/sub_location/add_request_quotation",
+        name: "subLocationAdd",
+        component: SubLocationAddRequestQuotation,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/sub_location/edit/:id",
+        name: "subLocationEdit",
+        component: SubLocationEdit,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/sub_location/edit_request_quotation/:id",
+        name: "subLocationEdit",
+        component: SubLocationEditRequestQuotation,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/sub_location/edit_upgrade_package/:id",
+        name: "subLocationEdit",
+        component: SubLocationEditUpgradePackage,
+        layout: "/admin",
+        hidden: true
+    },
+    {
         path: "/services",
         name: "Services",
         icon: "nc-icon nc-settings-gear-65",
@@ -142,6 +208,20 @@ const routes = [
         main_hide: true,
         counter_display_hide: true,
         dispenser_hide: true
+    },
+    {
+        path: "/service/add",
+        name: "serviceAdd",
+        component: ServiceAdd,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/service/edit/:id",
+        name: "serviceEdit",
+        component: ServiceEdit,
+        layout: "/admin",
+        hidden: true
     },
     {
         path: "/counters",

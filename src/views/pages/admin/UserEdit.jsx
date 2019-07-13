@@ -1,10 +1,12 @@
 import React from "react";
 import Select from "react-select";
-import Firebase from 'firebase';
 import PasswordHash from 'password-hash';
-import config from '../../../config';
 import NotificationAlert from "react-notification-alert";
 import LoadingOverlay from "react-loading-overlay";
+import Switch from "react-bootstrap-switch";
+import Firebase from 'firebase';
+import config from '../../../config';
+import {roles} from "../../../utils/utils"
 
 // reactstrap components
 import {
@@ -25,8 +27,6 @@ import {
     Collapse,
     Label
 } from "reactstrap";
-import Switch from "react-bootstrap-switch";
-import {roles} from "../../../utils/utils"
 
 class UserEdit extends React.Component {
     constructor(props) {
@@ -34,6 +34,7 @@ class UserEdit extends React.Component {
         if (!Firebase.apps.length) {
             Firebase.initializeApp(config);
         }
+
         this.state = {
             loading: false,
             roles: [],

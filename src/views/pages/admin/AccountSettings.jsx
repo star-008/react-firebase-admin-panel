@@ -89,16 +89,18 @@ class AccountSettings extends React.Component {
   }
   componentWillMount() {
       var role = JSON.parse(localStorage.getItem('auth_info')).role;
-      if (role === "Site_Admin" || role === "System_Admin" || role === "Location_Admin")
+      if (role === "Site_Admin" || role === "System_Admin" || role === "Location_Admin") {
           this.setState({hideCustom: false});
 
-      var array = Object.keys(getNameList());
-      var list = this.state.country_list;
-      array.forEach(function (item) {
-          list.push({value: item, label: item});
-      });
+          var array = Object.keys(getNameList());
+          var list = this.state.country_list;
+          array.forEach(function (item) {
+              list.push({value: item, label: item});
+          });
 
-      this.setState({country_list: list});
+          this.setState({country_list: list});
+      }
+
       this.loadData();
   };
   componentDidMount() {
@@ -248,10 +250,9 @@ class AccountSettings extends React.Component {
 
                 Firebase.firestore().collection('Customers').doc(_this.state.customer_id).update(update_cus_data)
                     .then(function() {
+                        _this.notifyMessage("tc", 2, "Update main account success!");
                         _this.setState({past_email: _this.state.email.toLowerCase()});
                         _this.setState({loading: false});
-                        _this.notifyMessage("tc", 2, "Update main account success!");
-                        window.setTimeout(function() { _this.props.history.push("/account_settings") }, 2000);
                     }).catch(function (error) {
                         _this.setState({loading: false});
                         _this.notifyMessage("tc", 3, "Network error!");
@@ -274,10 +275,9 @@ class AccountSettings extends React.Component {
 
         Firebase.firestore().collection('Customers').doc(_this.state.customer_id).update(update_cus_data)
             .then(function() {
+                _this.notifyMessage("tc", 2, "Update main account success!");
                 _this.setState({past_email: _this.state.email.toLowerCase()});
                 _this.setState({loading: false});
-                _this.notifyMessage("tc", 2, "Update main account success!");
-                window.setTimeout(function() { _this.props.history.push("/account_settings") }, 2000);
             }).catch(function (error) {
                 _this.setState({loading: false});
                 _this.notifyMessage("tc", 3, "Network error!");
@@ -344,9 +344,7 @@ class AccountSettings extends React.Component {
 
                                       _this.notifyMessage("tc", 2, "Update profile success!");
                                       _this.setState({past_email: _this.state.email.toLowerCase()});
-                                      window.setTimeout(function () {
-                                          _this.props.history.push("/account_settings")
-                                      }, 2000);
+                                      _this.setState({loading: false});
                                   }).catch(function (err) {
                                       _this.setState({loading: false});
                                       _this.notifyMessage("tc", 3, "NetWork Error.");
@@ -418,12 +416,9 @@ class AccountSettings extends React.Component {
                                   });
                               }
 
+                              _this.notifyMessage("tc", 2, "Update profile success!");
                               _this.setState({past_email: _this.state.email.toLowerCase()});
                               _this.setState({loading: false});
-                              _this.notifyMessage("tc", 2, "Update profile success!");
-                              window.setTimeout(function () {
-                                  _this.props.history.push("/account_settings")
-                              }, 2000);
                           }).catch(function (err) {
                               _this.setState({loading: false});
                               _this.notifyMessage("tc", 3, "NetWork Error.");
@@ -446,7 +441,7 @@ class AccountSettings extends React.Component {
       if (time === null || time === undefined)
           return "";
 
-      if (time.seconds === null)
+      if (time.seconds === null || time.seconds === undefined)
           return "";
 
       var date = new Date(time.seconds*1000);
