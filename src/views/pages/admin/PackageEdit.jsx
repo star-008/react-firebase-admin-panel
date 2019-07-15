@@ -99,6 +99,7 @@ class PackageEdit extends React.Component {
                 _this.setState({annual_price: parseInt(doc.data().Annual_Price)});
                 _this.setState({is_trail: doc.data().Is_Trail});
                 _this.setState({trail_days: parseInt(doc.data().Trail_Days)});
+                _this.setState({is_guideable: doc.data().Is_Guideable});
                 _this.setState({is_manager: doc.data().Is_Manager});
                 _this.setState({order_sequence: parseInt(doc.data().Order_Sequence)});
                 _this.setState({category: {name:doc.data().Category, label:doc.data().Category}});
@@ -227,6 +228,7 @@ class PackageEdit extends React.Component {
                             Annual_Price: _this.state.annual_price,
                             Is_Trail: _this.state.is_trail,
                             Trail_Days: parseInt(_this.state.trail_days),
+                            Is_Guideable: _this.state.is_guideable,
                             Is_Manager: _this.state.is_manager,
                             Order_Sequence: _this.state.order_sequence,
                             Category: _this.state.category===null?"":_this.state.category.label,
@@ -274,6 +276,7 @@ class PackageEdit extends React.Component {
                     Annual_Price: _this.state.annual_price,
                     Is_Trail: _this.state.is_trail,
                     Trail_Days: parseInt(_this.state.trail_days),
+                    Is_Guideable: _this.state.is_guideable,
                     Is_Manager: _this.state.is_manager,
                     Order_Sequence: _this.state.order_sequence,
                     Category: _this.state.category===null?"":_this.state.category.label,
@@ -751,6 +754,28 @@ class PackageEdit extends React.Component {
                                                                         min={0}
                                                                         onChange={e => {this.setState({trail_days: e.target.value})}}
                                                                     />
+                                                                </FormGroup>
+                                                            </Col>
+                                                        </Row>
+                                                    </Form>
+                                                </div>
+                                                <div className="col-md-12">
+                                                    <Form className="form-horizontal">
+                                                        <Row>
+                                                            <Label sm="4">User Guides, Training Documents and Videos</Label>
+                                                            <Col className="checkbox-radios" sm="8">
+                                                                <FormGroup check>
+                                                                    <Label check>
+                                                                        <Input
+                                                                            type="checkbox"
+                                                                            checked={this.state.is_guideable?true:false}
+                                                                            onChange={e =>
+                                                                            {this.setState({is_guideable: !this.state.is_guideable})}
+                                                                            }
+                                                                        />
+                                                                        <span className="form-check-sign" />
+                                                                        Enabled
+                                                                    </Label>
                                                                 </FormGroup>
                                                             </Col>
                                                         </Row>

@@ -50,6 +50,7 @@ class SubLocationAddSelectPackage extends React.Component {
                             id: doc.id,
                             Name: doc.data().Name,
                             Unit: doc.data().Unit,
+                            Hosted: doc.data().Hosted,
                             Multi_Location: doc.data().Multi_Location,
                             Numbers_Counters: doc.data().Numbers_Counters,
                             Numbers_Services: doc.data().Numbers_Services,
@@ -67,6 +68,7 @@ class SubLocationAddSelectPackage extends React.Component {
                             Annual_Price: doc.data().Annual_Price,
                             Is_Trail: doc.data().Is_Trail,
                             Trail_Days: doc.data().Trail_Days,
+                            Is_Guideable: doc.data().Is_Guideable,
                             Is_Manager: doc.data().Is_Manager,
                             Order_Sequence: doc.data().Order_Sequence,
                             Image_Url: doc.data().Image_Url,
@@ -160,7 +162,7 @@ class SubLocationAddSelectPackage extends React.Component {
                                 {prop.Trail_Days}
                             </p>
                             <p className="overflow-ellipsis">
-                                {prop.Is_Trail?"Yes":"No"}
+                                {prop.Is_Guideable?"Yes":"No"}
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Is_Manager?"Yes":"No"}

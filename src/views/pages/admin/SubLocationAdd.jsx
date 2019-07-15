@@ -456,7 +456,7 @@ class SubLocationAdd extends React.Component {
                                             <Col md="8">
                                                 <Form className="form-horizontal">
                                                     <Row>
-                                                        <Label md="4">Time Zone</Label>
+                                                        <Label md="4">Main Location</Label>
                                                         <Col md="8">
                                                             <FormGroup>
                                                                 <Select

@@ -53,6 +53,7 @@ class PackageAdd extends React.Component {
           annual_price: 0,
           is_trail: false,
           trail_days: 0,
+          is_guideable: false,
           is_manager: false,
           order_sequence: 0,
           category: null,
@@ -180,20 +181,21 @@ class PackageAdd extends React.Component {
                         Numbers_Token_Service: _this.state.numbers_token_service,
                         Is_Mobile: _this.state.is_mobile,
                         Customizable_Service: _this.state.customizable_service,
-                        Reporting: _this.state.reporting===null?"":_this.state.reporting.label,
+                        Reporting: _this.state.reporting===null?"":_this.state.reporting.value,
                         User_No: _this.state.user_no,
                         Is_Customer_Feedback: _this.state.is_customer_feedback,
                         Is_Api: _this.state.is_api,
-                        Archive: _this.state.archive===null?"":_this.state.archive.label,
+                        Archive: _this.state.archive===null?"":_this.state.archive.value,
                         Free_Updatable: _this.state.free_upDatable,
-                        Support: _this.state.support===null?"":_this.state.support.label,
+                        Support: _this.state.support===null?"":_this.state.support.value,
                         Monthly_Price: _this.state.monthly_price,
                         Annual_Price: _this.state.annual_price,
                         Is_Trail: _this.state.is_trail,
                         Trail_Days: parseInt(_this.state.trail_days),
+                        Is_Guideable: _this.state.is_guideable,
                         Is_Manager: _this.state.is_manager,
                         Order_Sequence: _this.state.order_sequence,
-                        Category: _this.state.category===null?"":_this.state.category.label,
+                        Category: _this.state.category===null?"":_this.state.category.value,
                         Detail: _this.state.detail,
                         Image_Url: res
                     };
@@ -227,20 +229,21 @@ class PackageAdd extends React.Component {
                 Numbers_Token_Service: _this.state.numbers_token_service,
                 Is_Mobile: _this.state.is_mobile,
                 Customizable_Service: _this.state.customizable_service,
-                Reporting: _this.state.reporting===null?"":_this.state.reporting.label,
+                Reporting: _this.state.reporting===null?"":_this.state.reporting.value,
                 User_No: _this.state.user_no,
                 Is_Customer_Feedback: _this.state.is_customer_feedback,
                 Is_Api: _this.state.is_api,
-                Archive: _this.state.archive===null?"":_this.state.archive.label,
+                Archive: _this.state.archive===null?"":_this.state.archive.value,
                 Free_Updatable: _this.state.free_upDatable,
-                Support: _this.state.support===null?"":_this.state.support.label,
+                Support: _this.state.support===null?"":_this.state.support.value,
                 Monthly_Price: _this.state.monthly_price,
                 Annual_Price: _this.state.annual_price,
                 Is_Trail: _this.state.is_trail,
                 Trail_Days: parseInt(_this.state.trail_days),
+                Is_Guideable: _this.state.is_guideable,
                 Is_Manager: _this.state.is_manager,
                 Order_Sequence: _this.state.order_sequence,
-                Category: _this.state.category===null?"":_this.state.category.label,
+                Category: _this.state.category===null?"":_this.state.category.value,
                 Detail: _this.state.detail,
                 Image_Url: ""
             };
@@ -714,6 +717,28 @@ class PackageAdd extends React.Component {
                                                                   min={0}
                                                                   onChange={e => {this.setState({trail_days: e.target.value})}}
                                                               />
+                                                          </FormGroup>
+                                                      </Col>
+                                                  </Row>
+                                              </Form>
+                                          </div>
+                                          <div className="col-md-12">
+                                              <Form className="form-horizontal">
+                                                  <Row>
+                                                      <Label sm="4">User Guides, Training Documents and Videos</Label>
+                                                      <Col className="checkbox-radios" sm="8">
+                                                          <FormGroup check>
+                                                              <Label check>
+                                                                  <Input
+                                                                      type="checkbox"
+                                                                      checked={this.state.is_guideable?true:false}
+                                                                      onChange={e =>
+                                                                      {this.setState({is_guideable: !this.state.is_guideable})}
+                                                                      }
+                                                                  />
+                                                                  <span className="form-check-sign" />
+                                                                  Enabled
+                                                              </Label>
                                                           </FormGroup>
                                                       </Col>
                                                   </Row>

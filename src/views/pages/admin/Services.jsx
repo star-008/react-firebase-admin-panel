@@ -30,6 +30,8 @@ class Services extends React.Component {
             main_location_list: [],
             selected_sub_location: null,
             sub_location_list: [],
+            max_count: 0,
+            current_count: 0,
 
             data: [],
             alert: null
@@ -68,7 +70,7 @@ class Services extends React.Component {
         let sub_locations = [];
         Firebase.firestore().collection('Sub_Locations').where('Main_Location_ID', '==', main_id).get().then(function (response) {
             response.docs.forEach(function (doc) {
-                sub_locations.push({label: doc.data().Name, value: doc.id});
+                sub_locations.push({label: doc.data().Name, value: doc.id, counts: doc.data().Service_Count, package_id: doc.data().Package_ID});
             });
 
             _this.setState({sub_location_list: sub_locations});
@@ -87,31 +89,57 @@ class Services extends React.Component {
         let _this = this;
         _this.setState({loading: true});
         let services = [];
-        Firebase.firestore().collection('Services').where('Sub_Location_ID', '==', sub_id).get().then(function (response) {
-            response.docs.forEach(function (doc) {
-                let one = {
-                    id: doc.id,
-                    name: doc.data().Name,
-                    icon: doc.data().Icon,
-                    start_number: doc.data().Start_Number,
-                    end_number: doc.data().End_Number,
-                    details: doc.data().Details,
-                    priority: doc.data().Priority,
+        // ------ Load Service Max Limit ------ //
+        Firebase.firestore().collection('Packages').doc(_this.state.selected_sub_location.package_id).get().then(function (doc) {
+            if (doc.exists) {
+                _this.setState({max_count: parseInt(doc.data().Numbers_Services)});
+                Firebase.firestore().collection('Services').where('Sub_Location_ID', '==', sub_id).get().then(function (response) {
+                    response.docs.forEach(function (doc) {
+                        let one = {
+                            id: doc.id,
+                            name: doc.data().Name,
+                            icon: doc.data().Icon,
+                            start_number: doc.data().Start_Number,
+                            end_number: doc.data().End_Number,
+                            details: doc.data().Details,
+                            priority: doc.data().Priority,
+                            updated_date: doc.data().Updated_Date
+                        };
+                        services.push(one);
+                    });
 
-                };
-                services.push(one);
-            });
 
-            let sorted = services.sort(function(a,b){
-                var x = a.priority < b.priority? -1:1;
-                return x;
-            });
-            _this.setState({data: sorted});
-            _this.setState({loading: false});
+                    let sorted = services.sort(function(a,b){
+                        if (a.priority === b.priority) {
+                            let x = a.updated_date > b.updated_date? -1:1;
+                            return x;
+                        } else {
+                            let x = a.priority < b.priority? -1:1;
+                            return x;
+                        }
+                    });
+                    _this.setState({data: sorted});
+                    _this.setState({current_count: sorted.length});
+                    _this.setState({loading: false});
+                }).catch(function (err) {
+                    _this.setState({loading: false});
+                    _this.notifyMessage("tc", 3, "Network error!");
+                });
+            } else {
+                _this.setState({loading: false});
+                _this.notifyMessage("tc", 3, "Network error!");
+            }
         }).catch(function (err) {
             _this.setState({loading: false});
             _this.notifyMessage("tc", 3, "Network error!");
         });
+    }
+    gotoAdd() {
+        if ( this.state.current_count >= this.state.max_count) {
+            this.notifyMessage("tc", 3, "You have reached the service max limit.");
+        } else {
+            this.props.history.push('/service/add');
+        }
     }
     onChangeMain(e) {
         this.setState({ selected_main_location : e });
@@ -131,7 +159,14 @@ class Services extends React.Component {
             if (object.icon!== "") {
                 var customerRef = storageRef.child(image_name);
                 customerRef.delete().then(function () {
-                    _this.successDelete();
+                    // ------- Update Service Count -------- //
+                    Firebase.firestore().collection('Sub_Locations').doc(_this.state.selected_sub_location.value).update({Service_Count: _this.state.selected_sub_location.counts-1})
+                        .then(function () {
+                            _this.successDelete();
+                        }).catch(function (err) {
+                        _this.setState({loading: false});
+                        _this.notifyMessage("tc", 3, "Network error!");
+                    });
                 }).catch(function (err) {
                     _this.setState({loading: false});
                     _this.notifyMessage("tc", 3, "Network error!");
@@ -198,6 +233,44 @@ class Services extends React.Component {
             );
         });
     }
+    notifyMessage = (place, color, text) => {
+        var type;
+        switch (color) {
+            case 1:
+                type = "primary";
+                break;
+            case 2:
+                type = "success";
+                break;
+            case 3:
+                type = "danger";
+                break;
+            case 4:
+                type = "warning";
+                break;
+            case 5:
+                type = "info";
+                break;
+            default:
+                break;
+        }
+
+        var options = {};
+        options = {
+            place: place,
+            message: (
+                <div className="text-md-center">
+                    <div>
+                        <b>{text}</b>
+                    </div>
+                </div>
+            ),
+            type: type,
+            icon: "now-ui-icons ui-1_bell-53",
+            autoDismiss: 3
+        };
+        this.refs.notificationAlert.notificationAlert(options);
+    };
     warningWithConfirmMessage = (object) => {
         this.setState({
             alert: (
@@ -248,35 +321,44 @@ class Services extends React.Component {
     };
     render() {
         const that = this;
+        const now = new Date();
         const dragProps = {
             onDragEnd(fromIndex, toIndex) {
                 if (fromIndex === -1 || toIndex === -1)
                     return;
 
                 const { data } = that.state;
+                const to_priority = data[toIndex].priority;
                 const item = data.splice(fromIndex, 1)[0];
                 data.splice(toIndex, 0, item);
-                // -------- Update priority -------- //
-                let start = fromIndex>toIndex?toIndex:fromIndex;
-                let end = fromIndex>toIndex?fromIndex:toIndex;
-                if (start === 0)
-                    data[start].priority = 1;
-                else
-                    data[start].priority = data[start-1].priority + 1;
-                for (let i=start+1; i<=end; i++) {
-                    data[i].priority = data[i].priority + 1;
-                }
-                // Store to database //
-                for (let j=start; j<=end; j++) {
-                    that.setState({loading: true});
-                    Firebase.firestore().collection('Services').doc(data[j].id).update({Priority: data[j].priority}).then(function () {
-                        that.setState({loading: false});
-                    }).catch(function (err) {
-                        that.setState({loading: false});
-                        that.notifyMessage("tc", 3, "Network error!");
-                    });
-                }
-
+                data[toIndex].priority = to_priority;
+                that.setState({loading: true});
+                Firebase.firestore().collection('Services').doc(data[toIndex].id).update({Priority: data[toIndex].priority, Updated_Date: now}).then(function () {
+                    that.setState({loading: false});
+                }).catch(function (err) {
+                    that.setState({loading: false});
+                    that.notifyMessage("tc", 3, "Network error!");
+                });
+                // // -------- Update priority -------- //
+                // let start = fromIndex>toIndex?toIndex:fromIndex;
+                // let end = fromIndex>toIndex?fromIndex:toIndex;
+                // if (start === 0)
+                //     data[start].priority = 1;
+                // else
+                //     data[start].priority = data[start-1].priority + 1;
+                // for (let i=start+1; i<=end; i++) {
+                //     data[i].priority = data[i].priority + 1;
+                // }
+                // // Store to database //
+                // for (let j=start; j<=end; j++) {
+                //     that.setState({loading: true});
+                //     Firebase.firestore().collection('Services').doc(data[j].id).update({Priority: data[j].priority}).then(function () {
+                //         that.setState({loading: false});
+                //     }).catch(function (err) {
+                //         that.setState({loading: false});
+                //         that.notifyMessage("tc", 3, "Network error!");
+                //     });
+                // }
                 that.setState({data: data});
             },
             nodeSelector: 'li',
@@ -304,7 +386,7 @@ class Services extends React.Component {
                                             <div>
                                                 <Button
                                                     className="btn btn-success"
-                                                    onClick={e => this.props.history.push("/service/add")}
+                                                    onClick={e => {e.preventDefault(); this.gotoAdd();}}
                                                     block
                                                 >
                                                     Add New

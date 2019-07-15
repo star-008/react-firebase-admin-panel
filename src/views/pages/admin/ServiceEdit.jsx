@@ -38,14 +38,16 @@ class ServiceEdit extends React.Component {
             service_key: '',
             name: '',
             service_details: '',
-            start_number: 0,
-            end_number: 0,
+            start_character: '',
+            start_number: 1,
+            invalid_start_number: false,
+            end_number: 2,
             priority: 1,
             time_reset: 0,
             is_reset: false,
             nameState: 'has-success',
 
-            new_week_select: {value: '0', label: 'Sunday'},
+            new_week_select: {value: 0, label: 'Sunday'},
             new_start_time: '',
             new_end_time: '',
             service_days: [],
@@ -57,7 +59,10 @@ class ServiceEdit extends React.Component {
             last_called_date_time: '',
             last_called_counter: '',
             last_called_user: '',
-            current_status: ''
+            current_status: '',
+            last_generated_token: '0000',
+            last_generated_token_date_time: '',
+            daily_reset_date_time: ''
         };
 
         this.handleSave = this.handleSave.bind(this);
@@ -84,6 +89,7 @@ class ServiceEdit extends React.Component {
                         _this.setState({service_details: doc.data().Details});
                         _this.setState({icon: doc.data().Icon});
                         _this.refs.icon.handleSetUrl(_this.state.icon);
+                        _this.setState({start_character: doc.data().Start_Character});
                         _this.setState({start_number: doc.data().Start_Number});
                         _this.setState({end_number: doc.data().End_Number});
                         _this.setState({priority: doc.data().Priority});
@@ -97,6 +103,9 @@ class ServiceEdit extends React.Component {
                         _this.setState({last_called_counter: doc.data().Last_Called_Counter});
                         _this.setState({last_called_user: doc.data().Last_Called_User});
                         _this.setState({current_status: doc.data().Current_Status});
+                        _this.setState({last_generated_token: doc.data().Last_Generated_Token});
+                        _this.setState({last_generated_token_date_time: doc.data().Last_Generated_Token_Date_Dime});
+                        _this.setState({daily_reset_date_time: doc.data().Daily_Reset_Date_Time});
                         _this.setState({loading: false});
                     } else {
                         _this.setState({loading: false});
@@ -120,7 +129,7 @@ class ServiceEdit extends React.Component {
             this.setState({ nameState: "has-danger" });
         }
 
-        if (this.state.nameState === "has-success") {
+        if (this.state.nameState === "has-success" && !this.state.invalid_start_number) {
             let _this = this;
             _this.setState({loading: true});
             var now = new Date();
@@ -142,10 +151,11 @@ class ServiceEdit extends React.Component {
                                 Icon: res,
                                 Name: _this.state.name,
                                 Details: _this.state.service_details,
-                                Start_Number: _this.state.start_number,
-                                End_Number: _this.state.end_number,
-                                Priority: _this.state.priority,
-                                Reset_Time: _this.state.time_reset,
+                                Start_Character: _this.state.start_character,
+                                Start_Number: parseInt(_this.state.start_number),
+                                End_Number: parseInt(_this.state.end_number),
+                                Priority: parseInt(_this.state.priority),
+                                Reset_Time: parseInt(_this.state.time_reset),
                                 Auto_Reset: _this.state.is_reset,
                                 Service_Days: _this.state.service_days,
                                 Updated_Date: now,
@@ -155,7 +165,10 @@ class ServiceEdit extends React.Component {
                                 Last_Called_Date_Time: _this.state.last_called_date_time,
                                 Last_Called_Counter: _this.state.last_called_counter,
                                 Last_Called_User: _this.state.last_called_user,
-                                Current_Status: _this.state.current_status
+                                Current_Status: _this.state.current_status,
+                                Last_Generated_Token: _this.state.last_generated_token,
+                                Last_Generated_Token_Date_Dime: _this.state.last_generated_token_date_time,
+                                Daily_Reset_Date_Time: _this.state.daily_reset_date_time
                             };
 
                             Firebase.firestore().collection('Services').doc(_this.state.service_key).update(update_service_data)
@@ -181,10 +194,11 @@ class ServiceEdit extends React.Component {
                     Created_Date: now,
                     Name: _this.state.name,
                     Details: _this.state.service_details,
-                    Start_Number: _this.state.start_number,
-                    End_Number: _this.state.end_number,
-                    Priority: _this.state.priority,
-                    Reset_Time: _this.state.time_reset,
+                    Start_Character: _this.state.start_character,
+                    Start_Number: parseInt(_this.state.start_number),
+                    End_Number: parseInt(_this.state.end_number),
+                    Priority: parseInt(_this.state.priority),
+                    Reset_Time: parseInt(_this.state.time_reset),
                     Auto_Reset: _this.state.is_reset,
                     Service_Days: _this.state.service_days,
                     Updated_Date: now,
@@ -194,7 +208,10 @@ class ServiceEdit extends React.Component {
                     Last_Called_Date_Time: _this.state.last_called_date_time,
                     Last_Called_Counter: _this.state.last_called_counter,
                     Last_Called_User: _this.state.last_called_user,
-                    Current_Status: _this.state.current_status
+                    Current_Status: _this.state.current_status,
+                    Last_Generated_Token: _this.state.last_generated_token,
+                    Last_Generated_Token_Date_Dime: _this.state.last_generated_token_date_time,
+                    Daily_Reset_Date_Time: _this.state.daily_reset_date_time
                 };
 
                 Firebase.firestore().collection('Services').doc(_this.state.service_key).update(update_service_data)
@@ -210,16 +227,46 @@ class ServiceEdit extends React.Component {
         }
     }
     handleAddDay() {
+        let _this = this;
         if (this.state.new_start_time !== "" && this.state.new_end_time !== "") {
-            var new_service_day = {
+            let new_service_day = {
+                week_day_order: this.state.new_week_select.value,
                 week_day: this.state.new_week_select.label,
                 start_time: this.state.new_start_time,
                 end_time: this.state.new_end_time
             };
-            var cur_service_days = this.state.service_days;
+
+            if (new_service_day.start_time >= new_service_day.end_time) {
+                this.notifyMessage("tc", 3, "Start time cannot same or bigger than the end time!");
+                return;
+            }
+
+            let cur_service_days = this.state.service_days;
+            let sames = cur_service_days.filter(item => item.week_day === new_service_day.week_day);
+            let overlap = false;
+            sames.forEach(function (one) {
+                if ((new_service_day.start_time >= one.start_time && new_service_day.start_time <= one.end_time) || (new_service_day.end_time >= one.start_time && new_service_day.end_time <= one.end_time)) {
+                    _this.notifyMessage("tc", 3, "Time Range Overlap!");
+                    overlap = true;
+                    return;
+                }
+            });
+
+            if (overlap)
+                return;
+
             cur_service_days.push(new_service_day);
-            this.setState({service_days: cur_service_days});
-            this.setState({new_week_select: {value: '0', label: 'Sunday'}});
+            // ------------- Sort Date and Start Time ------------ //
+            let sorted = cur_service_days.sort(function(a,b){
+                if (a.week_day === b.week_day) {
+                    let x = a.start_time < b.start_time? -1:1;
+                    return x;
+                } else {
+                    let x = a.week_day_order < b.week_day_order? -1:1;
+                    return x;
+                }
+            });
+            this.setState({service_days: sorted});
             this.setState({new_start_time: ''});
             this.setState({new_end_time: ''});
         }
@@ -301,6 +348,13 @@ class ServiceEdit extends React.Component {
     verifyLength = (value, length) => {
         return value.length >= length;
     };
+    verifyNumber = value => {
+        var numberRex = new RegExp("^[0-9]+$");
+        if (numberRex.test(value)) {
+            return true;
+        }
+        return false;
+    };
     change = (event, stateName, type, stateNameEqualTo) => {
         switch (type) {
             case "length":
@@ -308,6 +362,20 @@ class ServiceEdit extends React.Component {
                     this.setState({ [stateName + "State"]: "has-success" });
                 } else {
                     this.setState({ [stateName + "State"]: "has-danger" });
+                }
+                break;
+            case "number":
+                if (this.verifyNumber(event.target.value) && parseInt(event.target.value) > 0 && parseInt(event.target.value) < parseInt(this.state.end_number)) {
+                    this.setState({invalid_start_number: false});
+                    this.setState({ start_number: parseInt(event.target.value) });
+                    var str = (parseInt(event.target.value) - 1).toString();
+                    var pad = "0000";
+                    var last_generated_token = pad.substring(0, pad.length - str.length) + str;
+                    this.setState({ last_generated_token: last_generated_token });
+                } else {
+                    console.log('dd');
+                    this.setState({invalid_start_number: true});
+                    this.setState({ last_generated_token: "" });
                 }
                 break;
             default:
@@ -433,15 +501,28 @@ class ServiceEdit extends React.Component {
                                                         </Col>
                                                     </Row>
                                                     <Row>
+                                                        <Label md="4">Start Character</Label>
+                                                        <Col md="8">
+                                                            <FormGroup>
+                                                                <Input
+                                                                    placeholder="Start Character"
+                                                                    type="text"
+                                                                    onChange={e => {this.setState({start_character: e.target.value})}}
+                                                                />
+                                                            </FormGroup>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
                                                         <Label md="4">Start Number</Label>
                                                         <Col md="3">
                                                             <FormGroup>
                                                                 <Input
                                                                     value={this.state.start_number}
                                                                     type="number"
-                                                                    min={1}
-                                                                    max={parseInt(this.state.end_number) - 1}
-                                                                    onChange={e => {this.setState({start_number: e.target.value})}}
+                                                                    invalid={this.state.invalid_start_number}
+                                                                    // min={1}
+                                                                    // max={parseInt(this.state.end_number) - 1}
+                                                                    onChange={e => {this.change(e, "start_number", "number")}}
                                                                 />
                                                             </FormGroup>
                                                         </Col>
@@ -453,7 +534,7 @@ class ServiceEdit extends React.Component {
                                                                 <Input
                                                                     value={this.state.end_number}
                                                                     type="number"
-                                                                    min={parseInt(this.state.start_number) + 1}
+                                                                    // min={parseInt(this.state.start_number) + 1}
                                                                     onChange={e => {this.setState({end_number: e.target.value})}}
                                                                 />
                                                             </FormGroup>
@@ -534,13 +615,13 @@ class ServiceEdit extends React.Component {
                                                                         this.setState({ new_week_select: value })
                                                                     }
                                                                     options={[
-                                                                        { value: "0", label: "Sunday" },
-                                                                        { value: "1", label: "Monday" },
-                                                                        { value: "2", label: "Tuesday" },
-                                                                        { value: "3", label: "Wednesday" },
-                                                                        { value: "4", label: "Thursday" },
-                                                                        { value: "5", label: "Friday" },
-                                                                        { value: "6", label: "Saturday" },
+                                                                        { value: 0, label: "Sunday" },
+                                                                        { value: 1, label: "Monday" },
+                                                                        { value: 2, label: "Tuesday" },
+                                                                        { value: 3, label: "Wednesday" },
+                                                                        { value: 4, label: "Thursday" },
+                                                                        { value: 5, label: "Friday" },
+                                                                        { value: 6, label: "Saturday" },
                                                                     ]}
                                                                     placeholder="Select day of the week"
                                                                 />
@@ -706,6 +787,42 @@ class ServiceEdit extends React.Component {
                                                                             <FormGroup>
                                                                                 <Input
                                                                                     value={this.state.current_status}
+                                                                                    type="text"
+                                                                                    disabled
+                                                                                />
+                                                                            </FormGroup>
+                                                                        </Col>
+                                                                    </Row>
+                                                                    <Row>
+                                                                        <Label md="4">Last Generated Token</Label>
+                                                                        <Col md="8">
+                                                                            <FormGroup>
+                                                                                <Input
+                                                                                    value={this.state.last_generated_token}
+                                                                                    type="text"
+                                                                                    disabled
+                                                                                />
+                                                                            </FormGroup>
+                                                                        </Col>
+                                                                    </Row>
+                                                                    <Row>
+                                                                        <Label md="4">Last Generated Token Datetime</Label>
+                                                                        <Col md="8">
+                                                                            <FormGroup>
+                                                                                <Input
+                                                                                    value={this.state.last_generated_token_date_time}
+                                                                                    type="text"
+                                                                                    disabled
+                                                                                />
+                                                                            </FormGroup>
+                                                                        </Col>
+                                                                    </Row>
+                                                                    <Row>
+                                                                        <Label md="4">Daily Reset Datetime</Label>
+                                                                        <Col md="8">
+                                                                            <FormGroup>
+                                                                                <Input
+                                                                                    value={this.state.daily_reset_date_time}
                                                                                     type="text"
                                                                                     disabled
                                                                                 />
