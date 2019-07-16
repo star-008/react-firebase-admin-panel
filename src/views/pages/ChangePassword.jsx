@@ -225,7 +225,7 @@ class ChangePassword extends React.Component {
                     <div
                         className="full-page-background"
                         style={{
-                            backgroundColor: "lightGrey"
+                            backgroundImage: `url(${require("../../assets/img/bg/soroush-karimi.jpg")})`
                         }}
                     />
                 </div>

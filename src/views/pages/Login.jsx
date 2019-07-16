@@ -774,8 +774,7 @@ class Login extends React.Component {
                         <div
                             className="full-page-background"
                             style={{
-                                // backgroundImage: `url(${require("../../assets/img/bg/fabio-mangione.jpg")})`,
-                                backgroundColor: "lightGrey"
+                                backgroundImage: `url(${require("../../assets/img/bg/soroush-karimi.jpg")})`
                             }}
                         />
                     </div>
