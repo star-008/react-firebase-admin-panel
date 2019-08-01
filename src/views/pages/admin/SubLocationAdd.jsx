@@ -27,6 +27,7 @@ import {
 
 const uuidv1 = require('uuid/v1');
 const publicIp = require('public-ip');
+// const geoTz = require('geo-tz');
 class SubLocationAdd extends React.Component {
     constructor(props) {
         super(props);
@@ -41,15 +42,19 @@ class SubLocationAdd extends React.Component {
             customer_id: '',
             icon_max_limit: 0,
             map_zoom: 5,
+            is_mobile: false,
 
             sub_location_key: '',
             name: '',
             address: '',
             enable_mobile: false,
-            active: false,
+            active: true,
             package_name: '',
             time_zone: null,
             time_zone_list: [],
+            current_position: null,
+            current_time_zone: null,
+            center: null,
             position: null,
             remarks: '',
             nameState: '',
@@ -84,7 +89,6 @@ class SubLocationAdd extends React.Component {
 
         let sortTimezones = offsetTmz.sort().map(item => { return {'value': item, 'label': item}});
         _this.setState({time_zone_list: sortTimezones});
-        _this.setState({time_zone: sortTimezones[0]});
         // ---------- End Load TimeZone List ---------- //
         // ---------- Load Icon Max Size ---------- //
         Firebase.firestore().collection('System_Config').doc('Upload_Limits').get().then(function (upload_limit_info) {
@@ -111,10 +115,17 @@ class SubLocationAdd extends React.Component {
 
                         let result = JSON.parse(body);
                         _this.setState({address_info: result});
+                        _this.setState({current_position: { lat: parseFloat(result.latitude), lng: parseFloat(result.longitude) }});
                         _this.setState({position: { lat: parseFloat(result.latitude), lng: parseFloat(result.longitude) }});
+                        _this.setState({center: { lat: parseFloat(result.latitude), lng: parseFloat(result.longitude) }});
+                        let time_zone = result.time_zone.name;
+                        let same_one = _this.state.time_zone_list.find(item => item.value.includes(time_zone));
+                        _this.setState({time_zone: same_one});
+                        _this.setState({current_time_zone: same_one});
                         Firebase.firestore().collection('Packages').doc(_this.state.package_id).get().then(function (package_info) {
                             if (package_info.exists) {
                                 _this.setState({package_name: package_info.data().Name});
+                                _this.setState({is_mobile: package_info.data().Is_Mobile});
                                 // -------- Load Main Location List --------- //
                                 Firebase.firestore().collection('Main_Locations').where('Customer_ID', '==', customer_id).get().then(function (locations) {
                                     locations.docs.forEach(function (location) {
@@ -408,6 +419,16 @@ class SubLocationAdd extends React.Component {
     };
     onChangePosition(e) {
         this.setState({position: { lat: e.latLng.lat(), lng: e.latLng.lng() }});
+        // let time_zone = geoTz(e.latLng.lat(), e.latLng.lng());
+        // let same_one = this.state.time_zone_list.find(item => item.value.includes(time_zone));
+        // this.setState({time_zone: same_one});
+    }
+    onWatchCurrent() {
+        let current_position = this.state.current_position;
+        this.setState({position: current_position});
+        this.setState({center: current_position});
+        let current_time_zone = this.state.current_time_zone;
+        this.setState({time_zone: current_time_zone});
     }
     render() {
         let {
@@ -429,7 +450,7 @@ class SubLocationAdd extends React.Component {
                                     <CardTitle tag="h4">Sub Location Add</CardTitle>
                                 </CardHeader>
                                 <CardBody>
-                                    <Col className="ml-auto mr-auto" lg="8">
+                                    <Col className="ml-auto mr-auto" xl="8" lg="10" md="12">
                                         <Row>
                                             <Col md="3">
                                                 <Button
@@ -453,7 +474,7 @@ class SubLocationAdd extends React.Component {
                                         <Row className="top-margin-10">
                                         </Row>
                                         <Row>
-                                            <Col md="8">
+                                            <Col xl="8" lg="12" md="12">
                                                 <Form className="form-horizontal">
                                                     <Row>
                                                         <Label md="4">Main Location</Label>
@@ -531,6 +552,7 @@ class SubLocationAdd extends React.Component {
                                                                     offText={<i className="nc-icon nc-simple-remove" />}
                                                                     onColor="success"
                                                                     onText={<i className="nc-icon nc-check-2" />}
+                                                                    disabled={!this.state.is_mobile}
                                                                     defaultValue={this.state.enable_mobile}
                                                                     value={this.state.enable_mobile}
                                                                     onChange={e => {this.setState({enable_mobile: e.state.value})}}
@@ -589,10 +611,20 @@ class SubLocationAdd extends React.Component {
                                                         <Label md="4">Google Map</Label>
                                                         <Col md="8">
                                                             <FormGroup>
+                                                                <Button
+                                                                    className="btn-round"
+                                                                    color="primary"
+                                                                    outline
+                                                                    onClick={e => this.onWatchCurrent()}
+                                                                >
+                                                                    <i className="fa fa-eye" />
+                                                                    Where I am
+                                                                </Button>
                                                                 <CustomMap
                                                                     ref="custom_map"
                                                                     api_key={info.google_map_api_key}
-                                                                    center={this.state.position}
+                                                                    center={this.state.center}
+                                                                    position={this.state.position}
                                                                     zoom={this.state.map_zoom}
                                                                     onMarkerDragEnd={e => this.onChangePosition(e)}
                                                                 />

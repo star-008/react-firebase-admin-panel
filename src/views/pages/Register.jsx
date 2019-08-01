@@ -248,7 +248,8 @@ class Register extends React.Component {
                         Partner_Interest: _this.state.interest===0?false:true,
                         Image_Url: "",
                         Phone_Number: "",
-                        Web_Site: ""
+                        Web_Site: "",
+                        Customer_Category: 'Cat002'
                     };
                     Firebase.firestore().collection('Customers').doc(customer_id.toString()).set(reg_data1)
                         .then(function() {
@@ -387,7 +388,8 @@ class Register extends React.Component {
                         Partner_Interest: false,
                         Image_Url: "",
                         Phone_Number: "",
-                        Web_Site: ""
+                        Web_Site: "",
+                        Customer_Category: 'Cat002'
                     };
 
                     Firebase.firestore().collection('Customers').doc(customer_id).set(register_customer_data).then(function () {
@@ -488,7 +490,8 @@ class Register extends React.Component {
                         Partner_Interest: false,
                         Registered_Date: now_date,
                         Phone_Number: "",
-                        Web_Site: ""
+                        Web_Site: "",
+                        Customer_Category: 'Cat002'
                     };
 
                     Firebase.firestore().collection('Customers').doc(customer_id).set(register_customer_data).then(function () {
@@ -714,7 +717,7 @@ class Register extends React.Component {
                   <div
                       className="full-page-background"
                       style={{
-                          backgroundImage: `url(${require("../../assets/img/bg/soroush-karimi.jpg")})`
+                          backgroundColor: "lightGrey"
                       }}
                   />
                 </div>

@@ -53,39 +53,64 @@ class SubLocationEditUpgradePackage extends React.Component {
         let packages = [];
         Firebase.firestore().collection('Customers').doc(customer_id).get().then(function (own_customer_info) {
             if (own_customer_info.exists) {
-                Firebase.firestore().collection('Packages').where('Category', '==', own_customer_info.data().Customer_Category).get().then(function (package_list) {
-                    package_list.docs.forEach(function (doc) {
-                        packages.push({
-                            id: doc.id,
-                            Name: doc.data().Name,
-                            Unit: doc.data().Unit,
-                            Hosted: doc.data().Hosted,
-                            Multi_Location: doc.data().Multi_Location,
-                            Numbers_Counters: doc.data().Numbers_Counters,
-                            Numbers_Services: doc.data().Numbers_Services,
-                            Numbers_Token_Service: doc.data().Numbers_Token_Service,
-                            Is_Mobile: doc.data().Is_Mobile,
-                            Customizable_Service: doc.data().Customizable_Service,
-                            Reporting: doc.data().Reporting,
-                            User_No: doc.data().User_No,
-                            Is_Customer_Feedback: doc.data().Is_Customer_Feedback,
-                            Is_Api: doc.data().Is_Api,
-                            Archive: doc.data().Archive,
-                            Free_Updatable: doc.data().Free_Updatable,
-                            Support: doc.data().Support,
-                            Monthly_Price: doc.data().Monthly_Price,
-                            Annual_Price: doc.data().Annual_Price,
-                            Is_Trail: doc.data().Is_Trail,
-                            Trail_Days: doc.data().Trail_Days,
-                            Is_Guideable: doc.data().Is_Guideable,
-                            Is_Manager: doc.data().Is_Manager,
-                            Order_Sequence: doc.data().Order_Sequence,
-                            Image_Url: doc.data().Image_Url,
-                        });
-                    });
+                Firebase.firestore().collection('Sub_Locations').doc(_this.state.sub_location_id).get().then(function (sub_location_info) {
+                    if (sub_location_info.exists) {
+                        Firebase.firestore().collection('Packages').doc(sub_location_info.data().Package_ID).get().then(function (own_package_info) {
+                            if (own_package_info.exists) {
+                                let own_order_sequence = own_package_info.data().Order_Sequence;
+                                var query = Firebase.firestore().collection('Packages').where('Category', '==', own_customer_info.data().Customer_Category);
+                                // query = query.where('Order_Sequence', '>=', parseInt(own_order_sequence));
+                                query.get().then(function (package_list) {
+                                    package_list.docs.forEach(function (doc) {
+                                        if (doc.data().Order_Sequence <= own_order_sequence) {
+                                            packages.push({
+                                                id: doc.id,
+                                                Name: doc.data().Name,
+                                                Unit: doc.data().Unit,
+                                                Hosted: doc.data().Hosted,
+                                                Multi_Location: doc.data().Multi_Location,
+                                                Numbers_Counters: doc.data().Numbers_Counters,
+                                                Numbers_Services: doc.data().Numbers_Services,
+                                                Numbers_Token_Service: doc.data().Numbers_Token_Service,
+                                                Is_Mobile: doc.data().Is_Mobile,
+                                                Customizable_Service: doc.data().Customizable_Service,
+                                                Reporting: doc.data().Reporting,
+                                                User_No: doc.data().User_No,
+                                                Is_Customer_Feedback: doc.data().Is_Customer_Feedback,
+                                                Is_Api: doc.data().Is_Api,
+                                                Archive: doc.data().Archive,
+                                                Free_Updatable: doc.data().Free_Updatable,
+                                                Support: doc.data().Support,
+                                                Monthly_Price: doc.data().Monthly_Price,
+                                                Annual_Price: doc.data().Annual_Price,
+                                                Is_Trail: doc.data().Is_Trail,
+                                                Trail_Days: doc.data().Trail_Days,
+                                                Is_Guideable: doc.data().Is_Guideable,
+                                                Is_Manager: doc.data().Is_Manager,
+                                                Order_Sequence: doc.data().Order_Sequence,
+                                                Image_Url: doc.data().Image_Url,
+                                            });
+                                        }
+                                    });
 
-                    _this.setState({package_list: packages});
-                    _this.setState({loading: false});
+                                    _this.setState({package_list: packages});
+                                    _this.setState({loading: false});
+                                }).catch(function (err) {
+                                    _this.setState({loading: false});
+                                    _this.notifyMessage("tc", 3, "Network Error.");
+                                });
+                            } else {
+                                _this.setState({loading: false});
+                                _this.notifyMessage("tc", 3, "Network Error.");
+                            }
+                        }).catch(function (err) {
+                            _this.setState({loading: false});
+                            _this.notifyMessage("tc", 3, "Network Error.");
+                        });
+                    } else {
+                        _this.setState({loading: false});
+                        _this.notifyMessage("tc", 3, "Network Error.");
+                    }
                 }).catch(function (err) {
                     _this.setState({loading: false});
                     _this.notifyMessage("tc", 3, "Network Error.");
@@ -118,8 +143,8 @@ class SubLocationEditUpgradePackage extends React.Component {
         let _this = this;
         return this.state.package_list.map((prop, toggle_key) => {
             return (
-                <Col md="2" key={toggle_key}>
-                    <Card className="text-center border-gray height-card">
+                <Col xl="4" lg="6" key={toggle_key}>
+                    <Card className="text-center border-gray">
                         <CardHeader>
                             <CardTitle className="overflow-ellipsis">
                                 {prop.Name}
@@ -135,52 +160,103 @@ class SubLocationEditUpgradePackage extends React.Component {
                                 className="size-60-fixed"
                             />
                             <p className="top-margin-7 overflow-ellipsis">
+                                Cloud Hosted
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Hosted?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Multi Location
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Multi_Location}
                             </p>
                             <p className="overflow-ellipsis">
+                                Maximum Number Of Counters Per Location
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Numbers_Counters}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Number Of Services Per Location
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Numbers_Services}
                             </p>
                             <p className="overflow-ellipsis">
+                                Number Of Tokens Per Service Per Day
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Numbers_Token_Service}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Mobile Application
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Is_Mobile?"Yes":"No"}
                             </p>
                             <p className="overflow-ellipsis">
+                                Self Service Branding And Customization
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Customizable_Service?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Statistics And Reporting
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Reporting}
                             </p>
                             <p className="overflow-ellipsis">
+                                No Of Users Per Location
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.User_No}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Customer Feedback Module
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Is_Customer_Feedback?"Yes":"No"}
                             </p>
                             <p className="overflow-ellipsis">
+                                API's
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Is_Api?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Archived For
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Archive}
                             </p>
                             <p className="overflow-ellipsis">
+                                Free Updates
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Free_Updatable?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Support
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Support}
                             </p>
                             <p className="overflow-ellipsis">
-                                {prop.Trail_Days}
+                                Trail Days
+                            </p>
+                            <p className="overflow-ellipsis">
+                                {prop.Trail_Days===0?'N/A':prop.Trail_Days}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                User Guides, Training Documents and Videos
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Is_Guideable?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Designated Account Manager
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Is_Manager?"Yes":"No"}
@@ -255,8 +331,8 @@ class SubLocationEditUpgradePackage extends React.Component {
                                     <CardTitle tag="h4">Sub Location Edit / Upgrade Package</CardTitle>
                                 </CardHeader>
                                 <CardBody>
-                                    <Row>
-                                        <Col lg="2">
+                                    <Row className="bottom-margin-20">
+                                        <Col xl="2" lg="6">
                                             <div>
                                                 <Button
                                                     className="btn btn-youtube"
@@ -267,7 +343,7 @@ class SubLocationEditUpgradePackage extends React.Component {
                                                 </Button>
                                             </div>
                                         </Col>
-                                        <Col lg="2">
+                                        <Col xl="2" lg="6">
                                             <Select
                                                 className="react-select info select-location"
                                                 classNamePrefix="react-select"
@@ -289,73 +365,9 @@ class SubLocationEditUpgradePackage extends React.Component {
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col md="4">
-                                            <Card className="text-center border-gray height-card">
-                                                <CardHeader>
-                                                    <CardTitle className="overflow-ellipsis">
-                                                        Features
-                                                    </CardTitle>
-                                                </CardHeader>
-                                                <CardBody className="border-top-gray  overflow-ellipsis">
-                                                    <p className="top-margin-package-card-1">
-                                                        Cloud Hosted
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Multi Location
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Maximum Number Of Counters Per Location
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Number Of Services Per Location
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Number Of Tokens Per Service Per Day
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Mobile Application
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Self Service Branding And Customization
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Statistics And Reporting
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        No Of Users Per Location
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Customer Feedback Module
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        API's
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Archived For
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Free Updates
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Support
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Trail Days
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        User Guides, Training Documents and Videos
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Designated Account Manager
-                                                    </p>
-                                                </CardBody>
-                                                <CardFooter>
-                                                </CardFooter>
-                                            </Card>
-                                        </Col>
                                         {this.getPackages()}
-                                        <Col md="2">
-                                            <Card className="text-center border-gray height-card">
+                                        <Col xl="4" lg="6">
+                                            <Card className="text-center border-gray">
                                                 <CardHeader>
                                                     <CardTitle className="overflow-ellipsis">
                                                         Custom
@@ -363,6 +375,57 @@ class SubLocationEditUpgradePackage extends React.Component {
                                                 </CardHeader>
                                                 <CardBody className="border-top-gray overflow-ellipsis">
                                                     <p className="top-margin-package-card-1">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
                                                         -
                                                     </p>
                                                     <p className="overflow-ellipsis">

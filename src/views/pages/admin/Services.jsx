@@ -30,8 +30,6 @@ class Services extends React.Component {
             main_location_list: [],
             selected_sub_location: null,
             sub_location_list: [],
-            max_count: 0,
-            current_count: 0,
 
             data: [],
             alert: null
@@ -70,7 +68,7 @@ class Services extends React.Component {
         let sub_locations = [];
         Firebase.firestore().collection('Sub_Locations').where('Main_Location_ID', '==', main_id).get().then(function (response) {
             response.docs.forEach(function (doc) {
-                sub_locations.push({label: doc.data().Name, value: doc.id, counts: doc.data().Service_Count, package_id: doc.data().Package_ID});
+                sub_locations.push({label: doc.data().Name, value: doc.id, counts: doc.data().Service_Count});
             });
 
             _this.setState({sub_location_list: sub_locations});
@@ -89,57 +87,40 @@ class Services extends React.Component {
         let _this = this;
         _this.setState({loading: true});
         let services = [];
-        // ------ Load Service Max Limit ------ //
-        Firebase.firestore().collection('Packages').doc(_this.state.selected_sub_location.package_id).get().then(function (doc) {
-            if (doc.exists) {
-                _this.setState({max_count: parseInt(doc.data().Numbers_Services)});
-                Firebase.firestore().collection('Services').where('Sub_Location_ID', '==', sub_id).get().then(function (response) {
-                    response.docs.forEach(function (doc) {
-                        let one = {
-                            id: doc.id,
-                            name: doc.data().Name,
-                            icon: doc.data().Icon,
-                            start_number: doc.data().Start_Number,
-                            end_number: doc.data().End_Number,
-                            details: doc.data().Details,
-                            priority: doc.data().Priority,
-                            updated_date: doc.data().Updated_Date
-                        };
-                        services.push(one);
-                    });
+        Firebase.firestore().collection('Services').where('Sub_Location_ID', '==', sub_id).get().then(function (response) {
+            response.docs.forEach(function (doc) {
+                let one = {
+                    id: doc.id,
+                    name: doc.data().Name,
+                    icon: doc.data().Icon,
+                    start_number: doc.data().Start_Number,
+                    end_number: doc.data().End_Number,
+                    details: doc.data().Details,
+                    priority: doc.data().Priority,
+                    updated_date: doc.data().Updated_Date
+                };
+                services.push(one);
+            });
 
 
-                    let sorted = services.sort(function(a,b){
-                        if (a.priority === b.priority) {
-                            let x = a.updated_date > b.updated_date? -1:1;
-                            return x;
-                        } else {
-                            let x = a.priority < b.priority? -1:1;
-                            return x;
-                        }
-                    });
-                    _this.setState({data: sorted});
-                    _this.setState({current_count: sorted.length});
-                    _this.setState({loading: false});
-                }).catch(function (err) {
-                    _this.setState({loading: false});
-                    _this.notifyMessage("tc", 3, "Network error!");
-                });
-            } else {
-                _this.setState({loading: false});
-                _this.notifyMessage("tc", 3, "Network error!");
-            }
+            let sorted = services.sort(function(a,b){
+                if (a.priority === b.priority) {
+                    let x = a.updated_date > b.updated_date? -1:1;
+                    return x;
+                } else {
+                    let x = a.priority < b.priority? -1:1;
+                    return x;
+                }
+            });
+            _this.setState({data: sorted});
+            _this.setState({loading: false});
         }).catch(function (err) {
             _this.setState({loading: false});
             _this.notifyMessage("tc", 3, "Network error!");
         });
     }
     gotoAdd() {
-        if ( this.state.current_count >= this.state.max_count) {
-            this.notifyMessage("tc", 3, "You have reached the service max limit.");
-        } else {
-            this.props.history.push('/service/add');
-        }
+        this.props.history.push('/service/add');
     }
     onChangeMain(e) {
         this.setState({ selected_main_location : e });

@@ -232,10 +232,8 @@
   margin-bottom: 20px;
 }
 
-
 .profile-name {
   margin-top: 7px;
-
 }
 
 .profile-value {
@@ -370,13 +368,13 @@
   background-color: lightgray;
 }
 .padding-custom-location {
-  padding: 0 50px;
+  padding: 0 30px;
 }
 .padding-custom {
-  padding: 0 5px;
+  padding: 0 10px;
 }
 .top-margin-custom {
-  margin-top: 1.4%;
+  margin-top: 10px;
 }
 .custom-map-content {
   width: 100%;
@@ -384,4 +382,7 @@
 }
 .margin-0 {
   margin: 0;
+}
+.bottom-margin-20 {
+  margin-bottom: 20px;
 }
