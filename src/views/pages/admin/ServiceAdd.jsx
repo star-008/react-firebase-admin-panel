@@ -1,4 +1,3 @@
-
 import React from "react";
 import LoadingOverlay from "react-loading-overlay";
 import Select from "react-select";
@@ -71,18 +70,21 @@ class ServiceAdd extends React.Component {
 
             service_key: '',
             name: '',
+            nameState: '',
             service_details: '',
             start_character: '',
+            number_digits: {value: 4, label:'4'},
             invalid_start_number: false,
             invalid_end_number: false,
-            start_number: 1,
-            end_number: 2,
+            start_number: '0001',
+            end_number: '0002',
             priority: 1,
             reset_time: {value: 0, label: '00'},
             is_reset: false,
-            nameState: '',
-            new_week_select: {value: '0', label: 'Sunday'},
+            build_ai_generated: true,
+            auto_close_time: 12,
 
+            new_week_select: {value: '0', label: 'Sunday'},
             new_start_time: '',
             new_end_time: '',
             service_days: [],
@@ -226,11 +228,14 @@ class ServiceAdd extends React.Component {
                                             Name: _this.state.name,
                                             Details: _this.state.service_details,
                                             Start_Character: _this.state.start_character,
-                                            Start_Number: parseInt(_this.state.start_number),
-                                            End_Number: parseInt(_this.state.end_number),
+                                            Number_Digits: _this.state.number_digits.value,
+                                            Start_Number: _this.state.start_number,
+                                            End_Number: _this.state.end_number,
                                             Priority: parseInt(_this.state.priority),
                                             Reset_Time: parseInt(_this.state.reset_time.value),
                                             Auto_Reset: _this.state.is_reset,
+                                            Build_AI_Generated: _this.state.build_ai_generated,
+                                            Auto_Close_Time: _this.state.auto_close_time,
                                             Service_Days: _this.state.service_days,
                                             Updated_Date: now,
                                             Last_Printed_Number: _this.state.last_printed_number,
@@ -241,7 +246,7 @@ class ServiceAdd extends React.Component {
                                             Last_Called_User: _this.state.last_called_user,
                                             Current_Status: _this.state.current_status,
                                             Last_Generated_Token: _this.state.last_generated_token,
-                                            Last_Generated_Token_Date_Dime: _this.state.last_generated_token_date_time,
+                                            Last_Generated_Token_Date_Time: now,
                                             Daily_Reset_Date_Time: _this.state.daily_reset_date_time,
                                             Main_Location_ID: _this.state.selected_main_location.value,
                                             Sub_Location_ID: _this.state.selected_sub_location.value
@@ -272,11 +277,14 @@ class ServiceAdd extends React.Component {
                                 Name: _this.state.name,
                                 Details: _this.state.service_details,
                                 Start_Character: _this.state.start_character,
-                                Start_Number: parseInt(_this.state.start_number),
-                                End_Number: parseInt(_this.state.end_number),
+                                Number_Digits: _this.state.number_digits.value,
+                                Start_Number: _this.state.start_number,
+                                End_Number: _this.state.end_number,
                                 Priority: parseInt(_this.state.priority),
                                 Reset_Time: parseInt(_this.state.reset_time.value),
                                 Auto_Reset: _this.state.is_reset,
+                                Build_AI_Generated: _this.state.build_ai_generated,
+                                Auto_Close_Time: _this.state.auto_close_time,
                                 Service_Days: _this.state.service_days,
                                 Updated_Date: now,
                                 Last_Printed_Number: _this.state.last_printed_number,
@@ -287,7 +295,7 @@ class ServiceAdd extends React.Component {
                                 Last_Called_User: _this.state.last_called_user,
                                 Current_Status: _this.state.current_status,
                                 Last_Generated_Token: _this.state.last_generated_token,
-                                Last_Generated_Token_Date_Dime: _this.state.last_generated_token_date_time,
+                                Last_Generated_Token_Date_Time: now,
                                 Daily_Reset_Date_Time: _this.state.daily_reset_date_time,
                                 Main_Location_ID: _this.state.selected_main_location.value,
                                 Sub_Location_ID: _this.state.selected_sub_location.value
@@ -371,6 +379,108 @@ class ServiceAdd extends React.Component {
         if (index !== -1) cur_service_days.splice(index, 1);
         this.setState({service_days: cur_service_days});
     }
+    increaseStartNumber() {
+        if (this.state.start_number.length <= this.state.number_digits.value) {
+            let new_num = parseInt(this.state.start_number) + 1;
+            let new_token = new_num - 1;
+            let str_num = new_num.toString();
+            let str_token = new_token.toString();
+            let digits = this.state.number_digits.value;
+            let pad = '';
+            for (let i = 0; i < digits; i++) {
+                pad += '0';
+            }
+
+            let start_number = pad.substring(0, pad.length - str_num.length) + str_num;
+            let last_generated_token = pad.substring(0, pad.length - str_token.length) + str_token;
+            this.setState({start_number: start_number});
+            this.setState({last_generated_token: last_generated_token});
+            if (new_num < parseInt(this.state.end_number)) {
+                this.setState({invalid_start_number: false});
+                this.setState({invalid_end_number: false});
+            } else {
+                this.setState({invalid_start_number: true});
+            }
+        } else {
+            this.setState({invalid_start_number: true});
+        }
+    }
+    decreaseStartNumber() {
+        if (this.state.start_number.length <= this.state.number_digits.value) {
+            let cur_value = parseInt(this.state.start_number);
+            if (cur_value > 1) {
+                let new_value = parseInt(this.state.start_number) - 1;
+                let new_token = new_value - 1;
+                let str_num = new_value.toString();
+                let str_token = new_token.toString();
+                let digits = this.state.number_digits.value;
+                let pad = '';
+                for (let i = 0; i < digits; i++) {
+                    pad += '0';
+                }
+
+                let start_number = pad.substring(0, pad.length - str_num.length) + str_num;
+                let last_generated_token = pad.substring(0, pad.length - str_token.length) + str_token;
+                this.setState({start_number: start_number});
+                this.setState({last_generated_token: last_generated_token});
+                if (new_value < parseInt(this.state.end_number)) {
+                    this.setState({invalid_start_number: false});
+                    this.setState({invalid_end_number: false});
+                } else {
+                    this.setState({invalid_start_number: true});
+                }
+            }
+        } else {
+            this.setState({invalid_start_number: true});
+        }
+    }
+    increaseEndNumber() {
+        if (this.state.end_number.length <= this.state.number_digits.value) {
+            let new_value = parseInt(this.state.end_number) + 1;
+            let str = new_value.toString();
+            let digits = this.state.number_digits.value;
+            let pad = '';
+            for (let i = 0; i < digits; i++) {
+                pad += '0';
+            }
+
+            let new_end_number = pad.substring(0, pad.length - str.length) + str;
+            this.setState({end_number: new_end_number});
+            if (parseInt(this.state.start_number) < new_value) {
+                this.setState({invalid_start_number: false});
+                this.setState({invalid_end_number: false});
+            } else {
+                this.setState({invalid_end_number: true});
+            }
+        } else {
+            this.setState({invalid_end_number: true});
+        }
+    }
+    decreaseEndNumber() {
+        if (this.state.end_number.length <= this.state.number_digits.value) {
+            let cur_value = parseInt(this.state.end_number);
+            if (cur_value > 2) {
+                let new_value = parseInt(this.state.end_number) - 1;
+                let str = new_value.toString();
+                let digits = this.state.number_digits.value;
+                let pad = '';
+                for(let i=0; i<digits; i++) {
+                    pad += '0';
+                }
+
+                let new_end_number = pad.substring(0, pad.length - str.length) + str;
+                this.setState({end_number: new_end_number});
+                if (parseInt(this.state.start_number) < new_value) {
+                    this.setState({invalid_start_number: false});
+                    this.setState({invalid_end_number: false});
+                } else {
+                    this.setState({invalid_end_number: true});
+                }
+            }
+        } else {
+            this.setState({invalid_end_number: true});
+        }
+    }
     getServiceDays() {
         return this.state.service_days.map((prop, key) => {
             return (
@@ -412,11 +522,11 @@ class ServiceAdd extends React.Component {
     }
     checkNumberOverlap() {
         let number_list = this.state.number_list;
-        let start_number = this.state.start_number;
-        let end_number = this.state.end_number;
+        let start_number = parseInt(this.state.start_number);
+        let end_number = parseInt(this.state.end_number);
         let overlap = false;
         number_list.forEach(function (item) {
-           if ((start_number >= item.start_number && start_number <= item.end_number) || (end_number >= item.start_number && end_number <= item.end_number)) {
+           if ((start_number >= parseInt(item.start_number) && start_number <= parseInt(item.end_number)) || (end_number >= parseInt(item.start_number) && end_number <= parseInt(item.end_number))) {
                overlap = true;
                return;
            }
@@ -480,15 +590,20 @@ class ServiceAdd extends React.Component {
                 } else {
                     this.setState({ [stateName + "State"]: "has-danger" });
                 }
+
+                this.setState({ [stateName]: event.target.value });
                 break;
             case "start_number":
-                if (this.verifyNumber(event.target.value) && parseInt(event.target.value) > 0 && parseInt(event.target.value) < parseInt(this.state.end_number)) {
+                if (this.verifyNumber(event.target.value) && parseInt(event.target.value) > 0
+                    && parseInt(event.target.value) < parseInt(this.state.end_number)
+                    && event.target.value.length <= this.state.number_digits.value)
+                {
                     this.setState({invalid_start_number: false});
                     this.setState({invalid_end_number: false});
                     this.setState({ start_number: event.target.value });
-                    var str = (parseInt(event.target.value) - 1).toString();
-                    var pad = "0000";
-                    var last_generated_token = pad.substring(0, pad.length - str.length) + str;
+                    let str = (parseInt(event.target.value) - 1).toString();
+                    let pad = "0000";
+                    let last_generated_token = pad.substring(0, pad.length - str.length) + str;
                     this.setState({ last_generated_token: last_generated_token });
                 } else {
                     this.setState({invalid_start_number: true});
@@ -496,19 +611,47 @@ class ServiceAdd extends React.Component {
                 }
                 break;
             case "end_number":
-                if (this.verifyNumber(event.target.value) && parseInt(event.target.value) > 1 && parseInt(event.target.value) > parseInt(this.state.start_number)) {
+                if (this.verifyNumber(event.target.value) && parseInt(event.target.value) > 1
+                    && parseInt(event.target.value) > parseInt(this.state.start_number)
+                    && event.target.value.length <= this.state.number_digits.value)
+                {
                     this.setState({invalid_end_number: false});
                     this.setState({invalid_start_number: false});
+                    this.setState({ end_number: event.target.value });
                 } else {
                     this.setState({invalid_end_number: true});
                 }
+                break;
+            case "digits":
+                this.setState({number_digits: event});
+                let digits = event.value;
+                let str_start = parseInt(this.state.start_number).toString();
+                let str_end = parseInt(this.state.end_number).toString();
+                let pad = '';
+                for(let i=0; i<digits; i++) {
+                    pad += '0';
+                }
 
-                this.setState({ end_number: event.target.value });
+                let start_number = pad.substring(0, pad.length - str_start.length) + str_start;
+                let end_number = pad.substring(0, pad.length - str_end.length) + str_end;
+                this.setState({start_number: start_number});
+                this.setState({end_number: end_number});
+                if (str_start.length > pad.length) {
+                    this.setState({invalid_start_number: true});
+                } else {
+                    this.setState({invalid_start_number: false});
+                }
+
+                if (str_end.length > pad.length) {
+                    this.setState({invalid_end_number: true});
+                } else {
+                    this.setState({invalid_end_number: false});
+                }
                 break;
             default:
                 break;
         }
-        this.setState({ [stateName]: event.target.value });
+        // this.setState({ [stateName]: event.target.value });
     };
     collapsesToggle = collapse => {
         let openedCollapses = this.state.openedCollapses;
@@ -670,38 +813,98 @@ class ServiceAdd extends React.Component {
                                                                 <Input
                                                                     placeholder="Start Character"
                                                                     type="text"
+                                                                    maxLength="3"
                                                                     onChange={e => {this.setState({start_character: e.target.value})}}
                                                                 />
                                                             </FormGroup>
                                                         </Col>
                                                     </Row>
                                                     <Row>
-                                                        <Label md="4">Start Number</Label>
+                                                        <Label md="4">Number of digits</Label>
                                                         <Col md="3">
                                                             <FormGroup>
-                                                                <Input
-                                                                    value={this.state.start_number}
-                                                                    type="number"
-                                                                    invalid={this.state.invalid_start_number}
-                                                                    min={1}
-                                                                    // max={parseInt(this.state.end_number) - 1}
-                                                                    onChange={e => {this.change(e, "start_number", "start_number")}}
+                                                                <Select
+                                                                    className="react-select primary"
+                                                                    classNamePrefix="react-select"
+                                                                    value={this.state.number_digits}
+                                                                    onChange={value =>
+                                                                        this.change(value, "digits", "digits")
+                                                                    }
+                                                                    options={[
+                                                                        { value: 3, label: '3'},
+                                                                        { value: 4, label: '4'},
+                                                                        { value: 5, label: '5'},
+                                                                        { value: 6, label: '6'}
+                                                                    ]}
                                                                 />
                                                             </FormGroup>
                                                         </Col>
                                                     </Row>
                                                     <Row>
-                                                        <Label md="4">End Number</Label>
-                                                        <Col md="3">
+                                                        <Label md="4">Start Number</Label>
+                                                        <Col md="8">
                                                             <FormGroup>
-                                                                <Input
-                                                                    value={this.state.end_number}
-                                                                    type="number"
-                                                                    invalid={this.state.invalid_end_number}
-                                                                    min={2}
-                                                                    // min={parseInt(this.state.start_number) + 1}
-                                                                    onChange={e => {this.change(e, "end_number", "end_number")}}
-                                                                />
+                                                                <Row>
+                                                                    <Col md="4" xs="4">
+                                                                        <Input
+                                                                            value={this.state.start_number}
+                                                                            type="text"
+                                                                            maxLength={this.state.number_digits.value}
+                                                                            invalid={this.state.invalid_start_number}
+                                                                            onChange={e => {this.change(e, "start_number", "start_number")}}
+                                                                        />
+                                                                    </Col>
+                                                                    <Col md="8" xs="8" className="padding-left-0">
+                                                                        <Button
+                                                                            className="margin-top-0"
+                                                                            color="primary"
+                                                                            onClick={e => this.increaseStartNumber()}
+                                                                        >
+                                                                            <i className="fa fa-plus" />
+                                                                        </Button>
+                                                                        <Button
+                                                                            className="margin-top-0"
+                                                                            color="primary"
+                                                                            onClick={e => this.decreaseStartNumber()}
+                                                                        >
+                                                                            <i className="fa fa-minus" />
+                                                                        </Button>
+                                                                    </Col>
+                                                                </Row>
+                                                            </FormGroup>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <Label md="4">End Number</Label>
+                                                        <Col md="8">
+                                                            <FormGroup>
+                                                                <Row>
+                                                                    <Col md="4" xs="4">
+                                                                        <Input
+                                                                            value={this.state.end_number}
+                                                                            type="text"
+                                                                            maxLength={this.state.number_digits.value}
+                                                                            invalid={this.state.invalid_end_number}
+                                                                            onChange={e => {this.change(e, "end_number", "end_number")}}
+                                                                        />
+                                                                    </Col>
+                                                                    <Col md="8" xs="8" className="padding-left-0">
+                                                                        <Button
+                                                                            className="margin-top-0"
+                                                                            color="primary"
+                                                                            onClick={e => this.increaseEndNumber()}
+                                                                        >
+                                                                            <i className="fa fa-plus" />
+                                                                        </Button>
+                                                                        <Button
+                                                                            className="margin-top-0"
+                                                                            color="primary"
+                                                                            onClick={e => this.decreaseEndNumber()}
+                                                                        >
+                                                                            <i className="fa fa-minus" />
+                                                                        </Button>
+                                                                    </Col>
+                                                                </Row>
                                                             </FormGroup>
                                                         </Col>
                                                     </Row>
@@ -770,6 +973,57 @@ class ServiceAdd extends React.Component {
                                                                 </div>
                                                             </FormGroup>
                                                         </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <Label md="4">Generated Token ahead</Label>
+                                                        <Col md="8">
+                                                            <FormGroup>
+                                                                <div className="form-check-radio top-margin-7">
+                                                                    <Label check>
+                                                                        <Input
+                                                                            defaultChecked={this.state.build_ai_generated}
+                                                                            name="token_radio"
+                                                                            type="radio"
+                                                                            onChange={e => {this.setState({build_ai_generated: !this.state.build_ai_generated})}}
+                                                                        />
+                                                                        Build in AI Generated <span className="form-check-sign" />
+                                                                    </Label>
+                                                                </div>
+                                                            </FormGroup>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <Label md="4"/>
+                                                        <Col md="8">
+                                                            <FormGroup>
+                                                                <div className="form-check-radio">
+                                                                    <Label check>
+                                                                        <Input
+                                                                            defaultChecked={!this.state.build_ai_generated}
+                                                                            name="token_radio"
+                                                                            type="radio"
+                                                                            onChange={e => {this.setState({build_ai_generated: !this.state.build_ai_generated})}}
+                                                                        />
+                                                                        Specific to service <span className="form-check-sign" />
+                                                                    </Label>
+                                                                </div>
+                                                            </FormGroup>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <label md="8" xs="8" className="top-margin-10">auto close Open Tokens more than</label>
+                                                        <Col md="2" xs="3">
+                                                            <FormGroup>
+                                                                <Input
+                                                                    value={this.state.auto_close_time}
+                                                                    type="number"
+                                                                    min={0}
+                                                                    max={24}
+                                                                    onChange={e => { if(e.target.value.length<3){this.setState({auto_close_time: e.target.value})}}}
+                                                                />
+                                                            </FormGroup>
+                                                        </Col>
+                                                        <label className="top-margin-10">hours</label>
                                                     </Row>
                                                     <Row>
                                                         <Col md="4">

@@ -297,7 +297,7 @@ class Register extends React.Component {
                                         "Forum: https://forum.xxx.com<br/>" +
                                         "Twitter: https://twitter.com/xxx company<br/>" +
                                         "Facebook: https://www.facebook.com/xxx company<br/><br/>" +
-                                        "Best Regards.";
+                                        "Any questions? Email:support@xxx.com";
 
                                     _this.sendEmail(email, message_text);
                                     var message_text1 = "Congratulation.";

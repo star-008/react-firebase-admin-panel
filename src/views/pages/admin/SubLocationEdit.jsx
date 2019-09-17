@@ -206,7 +206,7 @@ class SubLocationEdit extends React.Component {
                     _this.notifyMessage("tc", 3, "Icon file size exceeds maximum size.");
                 } else {
                     var storageRef = Firebase.storage().ref();
-                    var image_name = "sub_location_icon_" + this.state.sub_location_key;
+                    var image_name = "sub_location_icon_" + this.state.sub_location_id;
                     var subLocationRef = storageRef.child(image_name);
                     subLocationRef.put(file).then(function (snapshot) {
                         subLocationRef.getDownloadURL().then(function (res) {

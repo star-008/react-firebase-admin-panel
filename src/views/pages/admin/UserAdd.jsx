@@ -452,7 +452,7 @@ class UserAdd extends React.Component {
                  >
                      {prop.sub_locations.map((prop, key) => {
                          return (
-                             <Label key={key} className="custom-nav-left">
+                             <Label key={key} className="row custom-nav-left">
                                  <Input
                                      name={prop.id}
                                      type="checkbox"
@@ -630,10 +630,10 @@ class UserAdd extends React.Component {
                                       <br/>
                                       <div>
                                           <span>Select Accessible Locations</span>
-                                          <div className="blockquote">
+                                          <div className="blockquote blockquote-primary">
                                               <div
                                                   aria-multiselectable={true}
-                                                  className="card-collapse col-md-6"
+                                                  className="card-collapse"
                                                   id="accordion"
                                                   role="tablist"
                                               >

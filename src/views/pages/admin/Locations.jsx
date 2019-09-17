@@ -150,7 +150,7 @@ class Locations extends React.Component {
                             return (
                                 <Row key={key}>
                                     <Col xl="4" lg="6" className="top-margin-custom padding-custom-location overflow-ellipsis">
-                                        <span id={'sub-' + toggle_key + '-' + key} onClick={e => e.preventDefault()}>
+                                        <span id={'sub-' + toggle_key + '-' + key} style={{ color: 'black'}} onClick={e => e.preventDefault()}>
                                         - {prop.name}
                                         </span>
                                     </Col>
@@ -320,7 +320,7 @@ class Locations extends React.Component {
                                             </Row>
                                             <Row>
                                                 <Col md="12">
-                                                    <div className="blockquote">
+                                                    <div className="blockquote blockquote-primary">
                                                         <div
                                                             aria-multiselectable={true}
                                                             className="card-collapse col-md-12"
