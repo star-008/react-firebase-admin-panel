@@ -22,7 +22,10 @@ import ServiceEdit from "./views/pages/admin/ServiceEdit.jsx";
 import Counters from "./views/pages/admin/Counters.jsx";
 import CounterDisplays from "./views/pages/admin/CounterDisplays.jsx";
 import MainDisplay from "./views/pages/admin/MainDisplay.jsx";
-import Dispensors from "./views/pages/admin/Dispensors.jsx";
+import Dispensers from "./views/pages/admin/Dispensers.jsx";
+import DispenserAdd from "./views/pages/admin/DispenserAdd.jsx";
+import DispenserBasicEdit from "./views/pages/admin/DispenserBasicEdit.jsx";
+import DispenserAdvanceEdit from "./views/pages/admin/DispenserAdvanceEdit.jsx";
 import Users from "./views/pages/admin/Users.jsx";
 import UserAdd from "./views/pages/admin/UserAdd.jsx";
 import UserEdit from "./views/pages/admin/UserEdit.jsx";
@@ -254,15 +257,36 @@ const routes = [
         dispenser_hide: true
     },
     {
-        path: "/dispensors",
-        name: "Dispensors",
+        path: "/dispensers",
+        name: "Dispensers",
         icon: "nc-icon nc-laptop",
-        component: Dispensors,
+        component: Dispensers,
         layout: "/admin",
         local_hide: true,
         counter_hide: true,
         main_hide: true,
         counter_display_hide: true
+    },
+    {
+        path: "/dispenser/add",
+        name: "dispenserAdd",
+        component: DispenserAdd,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/dispenser/basicEdit/:id",
+        name: "dispenserBasicEdit",
+        component: DispenserBasicEdit,
+        layout: "/admin",
+        hidden: true
+    },
+    {
+        path: "/dispenser/advanceEdit/:id",
+        name: "dispenserAdvanceEdit",
+        component: DispenserAdvanceEdit,
+        layout: "/admin",
+        hidden: true
     },
     {
         path: "/users",

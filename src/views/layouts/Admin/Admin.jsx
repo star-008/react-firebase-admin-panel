@@ -26,8 +26,12 @@ class Admin extends React.Component {
     }
 
     if (localStorage.getItem('auth_info')) {
-        if (this.props.history.action === "PUSH" || this.props.location.pathname === "/")
+        let running_dispenser = localStorage.getItem('running_dispenser');
+        if (running_dispenser) {
+            this.props.history.push('/dispenser/run/' + running_dispenser);
+        } else if (this.props.history.action === "PUSH" || this.props.location.pathname === "/") {
             this.props.history.push('/welcome');
+        }
     } else {
         if (cookies.get('auth_info')) {
             Firebase.firestore().collection('Customers').doc(cookies.get('auth_info')).get().then(function (customer) {
