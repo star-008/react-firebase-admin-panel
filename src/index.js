@@ -8,6 +8,7 @@ import Login from "./views/pages/Login.jsx"
 import Register from "./views/pages/Register.jsx"
 import Forgot from "./views/pages/Forgot.jsx"
 import ChangePassword from "./views/pages/ChangePassword";
+import DispenserRun from "./views/pages/DispenserRun";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "./assets/scss/paper-dashboard.scss";
@@ -25,6 +26,7 @@ ReactDOM.render(
             <Route path="/register" render={props => <Register {...props} />} />
             <Route path="/forgot_password" render={props => <Forgot {...props} />} />
             <Route path="/change_password" render={props => <ChangePassword {...props} />} />
+            <Route path="/dispenser/run/:id" render={props => <DispenserRun {...props} />} />
             <Redirect from="/logout" to="/login" />
             <Route path="/" render={props => <AdminLayout {...props} />} />
         </Switch>

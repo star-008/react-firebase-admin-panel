@@ -467,9 +467,10 @@ class AccountSettings extends React.Component {
                   _this.setState({oldPass: ""});
                   _this.setState({newPass: ""});
                   _this.setState({confirmPass: ""});
+                  _this.setState({loading: false});
                   _this.notifyMessage("tc", 2, "Password changed successfully.");
-                  window.setTimeout(function() { _this.props.history.push("/account_settings") }, 2000);
               }).catch(function (error) {
+                  _this.setState({loading: false});
                   _this.notifyMessage("tc", 3, "Please confirm email again!");
               });
           }

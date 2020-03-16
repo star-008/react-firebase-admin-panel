@@ -12,8 +12,7 @@ import {
     CardTitle,
     Row,
     Button,
-    Collapse,
-    Label
+    Collapse
 } from "reactstrap";
 
 class Locations extends React.Component {
@@ -115,22 +114,23 @@ class Locations extends React.Component {
         return this.state.locations.map((prop, toggle_key) => {
             return (
                 <div key={toggle_key}>
-                    <div className="row">
-                        <div className="col-md-5 top-margin-custom overflow-ellipsis">
+                    <Row>
+                        <Col xl="4" lg="6" className="top-margin-custom overflow-ellipsis">
                             <a href="#" className="custom-nav"><i className={this.state.openedCollapses.includes(toggle_key)?"nc-icon nc-minimal-up":"nc-icon nc-minimal-down"}/></a>
                             <a
                                 aria-expanded={this.state.openedCollapses.includes(
                                     toggle_key
                                 )}
                                 href="#"
+                                id={'main-' + toggle_key}
                                 data-parent="#accordion"
                                 data-toggle="collapse"
                                 onClick={ e => {e.preventDefault(); this.collapsesToggle(toggle_key);}}
                             >
                                 {prop.name}
                             </a>
-                        </div>
-                        <div className="col-md-2 padding-custom">
+                        </Col>
+                        <Col xl="2" lg="2" className="padding-custom">
                             <Button
                                 onClick={e => {e.preventDefault(); this.onEditMain(prop.id)}}
                                 className="btn btn-sm btn-primary"
@@ -138,10 +138,8 @@ class Locations extends React.Component {
                             >
                                 Edit
                             </Button>
-                        </div>
-                        <div className="col-md-5">
-                        </div>
-                    </div>
+                        </Col>
+                    </Row>
                     <Collapse
                         role="tabpanel"
                         isOpen={this.state.openedCollapses.includes(
@@ -150,13 +148,13 @@ class Locations extends React.Component {
                     >
                         {prop.sub_locations.map((prop, key) => {
                             return (
-                                <div key={key} className="row">
-                                    <div className="col-md-5 top-margin-custom padding-custom-location overflow-ellipsis">
-                                        <span onClick={e => e.preventDefault()}>
+                                <Row key={key}>
+                                    <Col xl="4" lg="6" className="top-margin-custom padding-custom-location overflow-ellipsis">
+                                        <span id={'sub-' + toggle_key + '-' + key} style={{ color: 'black'}} onClick={e => e.preventDefault()}>
                                         - {prop.name}
                                         </span>
-                                    </div>
-                                    <div className="col-md-2 padding-custom">
+                                    </Col>
+                                    <Col xl="2" lg="2" className="padding-custom">
                                         <Button
                                             onClick={e => {e.preventDefault(); this.onEditSub(prop.id)}}
                                             className="btn btn-sm btn-warning text-capitalize"
@@ -164,8 +162,8 @@ class Locations extends React.Component {
                                         >
                                             Edit
                                         </Button>
-                                    </div>
-                                    <div className="col-md-2 padding-custom">
+                                    </Col>
+                                    <Col xl="2" lg="2" className="padding-custom">
                                         <Button
                                             onClick={e => {e.preventDefault(); this.onUpgradeSub(prop.id)}}
                                             className="btn btn-sm btn-success text-capitalize"
@@ -173,8 +171,8 @@ class Locations extends React.Component {
                                         >
                                             Upgrade
                                         </Button>
-                                    </div>
-                                    <div className="col-md-2 padding-custom">
+                                    </Col>
+                                    <Col xl="2" lg="2" className="padding-custom">
                                         <Button
                                             onClick={e => {e.preventDefault(); this.onDisableSub(prop.id)}}
                                             className="btn btn-sm btn-danger text-capitalize"
@@ -182,8 +180,8 @@ class Locations extends React.Component {
                                         >
                                             Disable
                                         </Button>
-                                    </div>
-                                </div>
+                                    </Col>
+                                </Row>
                             );
                         })}
                     </Collapse>
@@ -296,45 +294,46 @@ class Locations extends React.Component {
                                     <CardTitle tag="h4">Locations</CardTitle>
                                 </CardHeader>
                                 <CardBody>
-                                    <Col className="ml-auto mr-auto" lg="8">
-                                        <Row>
-                                            <Col md="3">
-                                                <Button
-                                                    onClick={e => {e.preventDefault(); this.onAddMain();}}
-                                                    className="btn btn-info"
-                                                    block
-                                                >
-                                                    Add Main Location
-                                                </Button>
-                                            </Col>
-                                            <Col md="3">
-                                                <Button
-                                                    onClick={e => {e.preventDefault(); this.onAddSub()}}
-                                                    className="btn btn-info"
-                                                    block
-                                                >
-                                                    Add Sub Location
-                                                </Button>
-                                            </Col>
-                                            <Col md="6"/>
-                                        </Row>
-                                        <Row className="top-margin-10">
-                                        </Row>
-                                        <Row>
-                                            <Col md="8">
-                                                <div className="blockquote">
-                                                    <div
-                                                        aria-multiselectable={true}
-                                                        className="card-collapse col-md-12"
-                                                        id="accordion"
-                                                        role="tablist"
+                                    <Row>
+                                        <Col className="ml-auto mr-auto" xl="10" lg="12" md="12">
+                                            <Row className="bottom-margin-20">
+                                                <Col xl="3" lg="4">
+                                                    <Button
+                                                        onClick={e => {e.preventDefault(); this.onAddMain();}}
+                                                        className="btn btn-info"
+                                                        id="btnAddMain"
+                                                        block
                                                     >
-                                                        {this.getLocations()}
+                                                        Add Main Location
+                                                    </Button>
+                                                </Col>
+                                                <Col xl="3" lg="4">
+                                                    <Button
+                                                        onClick={e => {e.preventDefault(); this.onAddSub()}}
+                                                        className="btn btn-info"
+                                                        id="btnAddSub"
+                                                        block
+                                                    >
+                                                        Add Sub Location
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col md="12">
+                                                    <div className="blockquote blockquote-primary">
+                                                        <div
+                                                            aria-multiselectable={true}
+                                                            className="card-collapse col-md-12"
+                                                            id="accordion"
+                                                            role="tablist"
+                                                        >
+                                                            {this.getLocations()}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    </Col>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
                                 </CardBody>
                             </Card>
                         </Col>

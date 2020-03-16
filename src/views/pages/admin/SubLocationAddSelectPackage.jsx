@@ -100,8 +100,8 @@ class SubLocationAddSelectPackage extends React.Component {
         let _this = this;
         return this.state.package_list.map((prop, toggle_key) => {
             return (
-                <Col md="2" key={toggle_key}>
-                    <Card className="text-center border-gray height-card">
+                <Col xl="4" lg="6" key={toggle_key}>
+                    <Card className="text-center border-gray">
                         <CardHeader>
                             <CardTitle className="overflow-ellipsis">
                                 {prop.Name}
@@ -117,52 +117,103 @@ class SubLocationAddSelectPackage extends React.Component {
                                 className="size-60-fixed"
                             />
                             <p className="top-margin-7 overflow-ellipsis">
+                                Cloud Hosted
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Hosted?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Multi Location
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Multi_Location}
                             </p>
                             <p className="overflow-ellipsis">
+                                Maximum Number Of Counters Per Location
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Numbers_Counters}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Number Of Services Per Location
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Numbers_Services}
                             </p>
                             <p className="overflow-ellipsis">
+                                Number Of Tokens Per Service Per Day
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Numbers_Token_Service}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Mobile Application
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Is_Mobile?"Yes":"No"}
                             </p>
                             <p className="overflow-ellipsis">
+                                Self Service Branding And Customization
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Customizable_Service?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Statistics And Reporting
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Reporting}
                             </p>
                             <p className="overflow-ellipsis">
+                                No Of Users Per Location
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.User_No}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Customer Feedback Module
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Is_Customer_Feedback?"Yes":"No"}
                             </p>
                             <p className="overflow-ellipsis">
+                                API's
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Is_Api?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Archived For
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Archive}
                             </p>
                             <p className="overflow-ellipsis">
+                                Free Updates
+                            </p>
+                            <p className="overflow-ellipsis">
                                 {prop.Free_Updatable?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Support
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Support}
                             </p>
                             <p className="overflow-ellipsis">
-                                {prop.Trail_Days}
+                                Trail Days
+                            </p>
+                            <p className="overflow-ellipsis">
+                                {prop.Trail_Days===0?'N/A':prop.Trail_Days}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                User Guides, Training Documents and Videos
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Is_Guideable?"Yes":"No"}
+                            </p>
+                            <p className="overflow-ellipsis">
+                                Designated Account Manager
                             </p>
                             <p className="overflow-ellipsis">
                                 {prop.Is_Manager?"Yes":"No"}
@@ -237,8 +288,8 @@ class SubLocationAddSelectPackage extends React.Component {
                                     <CardTitle tag="h4">Sub Location Add / Select Package</CardTitle>
                                 </CardHeader>
                                 <CardBody>
-                                    <Row>
-                                        <Col lg="2">
+                                    <Row className="bottom-margin-20">
+                                        <Col xl="2" lg="6">
                                             <div>
                                                 <Button
                                                     className="btn btn-youtube"
@@ -249,7 +300,7 @@ class SubLocationAddSelectPackage extends React.Component {
                                                 </Button>
                                             </div>
                                         </Col>
-                                        <Col lg="2">
+                                        <Col xl="2" lg="6">
                                             <Select
                                                 className="react-select info select-location"
                                                 classNamePrefix="react-select"
@@ -271,73 +322,9 @@ class SubLocationAddSelectPackage extends React.Component {
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col md="4">
-                                            <Card className="text-center border-gray height-card">
-                                                <CardHeader>
-                                                    <CardTitle className="overflow-ellipsis">
-                                                        Features
-                                                    </CardTitle>
-                                                </CardHeader>
-                                                <CardBody className="border-top-gray  overflow-ellipsis">
-                                                    <p className="top-margin-package-card-1">
-                                                        Cloud Hosted
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Multi Location
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Maximum Number Of Counters Per Location
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Number Of Services Per Location
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Number Of Tokens Per Service Per Day
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Mobile Application
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Self Service Branding And Customization
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Statistics And Reporting
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        No Of Users Per Location
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Customer Feedback Module
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        API's
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Archived For
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Free Updates
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Support
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Trail Days
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        User Guides, Training Documents and Videos
-                                                    </p>
-                                                    <p className="overflow-ellipsis">
-                                                        Designated Account Manager
-                                                    </p>
-                                                </CardBody>
-                                                <CardFooter>
-                                                </CardFooter>
-                                            </Card>
-                                        </Col>
                                         {this.getPackages()}
-                                        <Col md="2">
-                                            <Card className="text-center border-gray height-card">
+                                        <Col xl="4" lg="6">
+                                            <Card className="text-center border-gray">
                                                 <CardHeader>
                                                     <CardTitle className="overflow-ellipsis">
                                                         Custom
@@ -345,6 +332,57 @@ class SubLocationAddSelectPackage extends React.Component {
                                                 </CardHeader>
                                                 <CardBody className="border-top-gray overflow-ellipsis">
                                                     <p className="top-margin-package-card-1">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
+                                                        -
+                                                    </p>
+                                                    <p className="overflow-ellipsis">
                                                         -
                                                     </p>
                                                     <p className="overflow-ellipsis">

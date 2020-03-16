@@ -226,7 +226,7 @@ class Forgot extends React.Component {
                     <div
                         className="full-page-background"
                         style={{
-                            backgroundImage: `url(${require("../../assets/img/bg/soroush-karimi.jpg")})`
+                            backgroundColor: "lightGrey"
                         }}
                     />
                 </div>

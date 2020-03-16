@@ -16,7 +16,7 @@ class CustomMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            last_position: null
         };
 
         this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
@@ -24,10 +24,21 @@ class CustomMap extends React.Component {
     static defaultProps = {
         api_key: '',
         center: null,
+        position: null,
         zoom: '',
     };
-    componentWillMount() {
-
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        if (nextProps.center === null) {
+            return false;
+        } else {
+            let last_position = this.state.last_position;
+            if (last_position === nextProps.center) {
+                return false;
+            } else {
+                this.setState({last_position: nextProps.center});
+                return true;
+            }
+        }
     }
     onMarkerClick(e) {
 
@@ -51,7 +62,7 @@ class CustomMap extends React.Component {
                         onClick={e => this.onMarkerClick(e)}
                         draggable={true}
                         onDragEnd={ e => this.onMarkerDragEnd(e)}
-                        position={this.props.center}
+                        position={this.props.position}
                     />
                 </GoogleMap>
             ))

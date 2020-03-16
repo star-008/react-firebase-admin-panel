@@ -232,10 +232,8 @@
   margin-bottom: 20px;
 }
 
-
 .profile-name {
   margin-top: 7px;
-
 }
 
 .profile-value {
@@ -303,6 +301,12 @@
 .top-margin-7 {
   margin-top: 7px;
 }
+.margin-top-1 {
+  margin-top: 1px;
+}
+.margin-top-0 {
+  margin-top: 0;
+}
 .top-margin-2 {
   margin-top: 2px;
 }
@@ -325,6 +329,9 @@
 }
 .width-30 {
   width: 30%;
+}
+.width-20 {
+  width: 20%;
 }
 .size-60-fixed {
   width: 60px;
@@ -370,13 +377,16 @@
   background-color: lightgray;
 }
 .padding-custom-location {
-  padding: 0 50px;
+  padding: 0 30px;
 }
 .padding-custom {
-  padding: 0 5px;
+  padding: 0 10px;
+}
+.padding-left-0 {
+  padding-left: 0;
 }
 .top-margin-custom {
-  margin-top: 1.4%;
+  margin-top: 10px;
 }
 .custom-map-content {
   width: 100%;
@@ -384,4 +394,58 @@
 }
 .margin-0 {
   margin: 0;
+}
+.padding-10 {
+  padding: 10px;
+}
+.bottom-margin-20 {
+  margin-bottom: 20px;
+}
+.fs-20 {
+  font-size: 20px;
+}
+.fs-15 {
+  font-size: 15px;
+}
+.fixed-div {
+  position: absolute;
+  overflow: hidden;
+}
+.custom-footer-1 {
+  position: absolute;
+  bottom: 0;
+  padding: 0;
+}
+.custom-footer-2 {
+  position: absolute;
+  bottom: 60px;
+  padding: 0;
+}
+.custom-footer-3 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 0;
+}
+.custom-footer-4 {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  padding: 0;
+}
+.opacity-top {
+  opacity: 9999;
+}
+.custom-close-section {
+  height: 77px;
+  margin-left: 14px;
+  padding: 2px 4px 2px 2px;
+}
+.print-image-div {
+  height: 90px;
+  background: no-repeat center;
+  background-size: contain;
+}
+.dispenser-card {
+  height: 996px;
 }

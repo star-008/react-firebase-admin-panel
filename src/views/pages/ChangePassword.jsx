@@ -2,8 +2,9 @@ import React from "react";
 import PasswordHash from 'password-hash';
 import NotificationAlert from "react-notification-alert";
 import LoadingOverlay from 'react-loading-overlay';
+import Firebase from "firebase";
+import config from "../../config";
 
-// reactstrap components
 import {
     Button,
     Card,
@@ -18,9 +19,6 @@ import {
     Col,
     Row
 } from "reactstrap";
-import Firebase from "firebase";
-import config from "../../config";
-
 
 class ChangePassword extends React.Component {
     constructor(props) {
@@ -41,10 +39,8 @@ class ChangePassword extends React.Component {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.notifyMessage = this.notifyMessage.bind(this);
-        console.log(this.state);
     }
     componentDidMount() {
-        // document.body.classList.toggle("login-page");
         var search = window.location.search;
         var token = search.slice(1, search.length);
         var _this = this;
@@ -65,10 +61,6 @@ class ChangePassword extends React.Component {
             _this.notifyMessage("tc", 3, "Please check your url again.");
         });
     }
-    componentWillUnmount() {
-        // document.body.classList.toggle("login-page");
-    }
-
     notifyMessage = (place, color, text) => {
         var type;
         switch (color) {
@@ -107,7 +99,6 @@ class ChangePassword extends React.Component {
         };
         this.refs.notificationAlert.notificationAlert(options);
     };
-
     handleSubmit = () => {
         if ((this.state.newPass !== this.state.confirmPass) || this.state.newPass === "") {
             this.setState({newPassState: 'has-danger'});
@@ -225,7 +216,7 @@ class ChangePassword extends React.Component {
                     <div
                         className="full-page-background"
                         style={{
-                            backgroundImage: `url(${require("../../assets/img/bg/soroush-karimi.jpg")})`
+                            backgroundColor: "lightGrey"
                         }}
                     />
                 </div>

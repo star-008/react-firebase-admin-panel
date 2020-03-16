@@ -232,7 +232,8 @@ class Login extends React.Component {
                             Partner_Interest: false,
                             Image_Url: "",
                             Phone_Number: "",
-                            Web_Site: ""
+                            Web_Site: "",
+                            Customer_Category: 'Cat002'
                         };
 
                         Firebase.firestore().collection('Customers').doc(customer_id).set(register_customer_data).then(function () {
@@ -341,7 +342,8 @@ class Login extends React.Component {
                             Partner_Interest: false,
                             Registered_Date: now_date,
                             Phone_Number: "",
-                            Web_Site: ""
+                            Web_Site: "",
+                            Customer_Category: 'Cat002'
                         };
 
                         Firebase.firestore().collection('Customers').doc(customer_id).set(register_customer_data).then(function () {
@@ -774,7 +776,8 @@ class Login extends React.Component {
                         <div
                             className="full-page-background"
                             style={{
-                                backgroundImage: `url(${require("../../assets/img/bg/soroush-karimi.jpg")})`
+                                // backgroundImage: `url(${require("../../assets/img/bg/fabio-mangione.jpg")})`,
+                                backgroundColor: "lightGrey"
                             }}
                         />
                     </div>
